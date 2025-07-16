@@ -71,7 +71,7 @@ func (c *Config) SupportsVoiceCloning() bool {
 // RequiresSpeakerIndex returns true if the effective model requires a speaker index.
 // TODO: Configure models that require speaker index.
 func (c *Config) RequiresSpeakerIndex() bool {
-	return false
+	return c.TTSModel.Architecture == ArchVITS
 }
 
 // Validate checks if the TTS configuration is valid and returns an error
