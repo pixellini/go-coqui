@@ -137,7 +137,6 @@ func (l Language) IsSupported() bool {
 
 // ParseLanguage parses a language string and returns the corresponding Language.
 // Accepts formats like "en-US", "en", "es-ES" and extracts the language code.
-// Returns English as the default for unsupported or invalid languages.
 // This function is useful for converting user input, configuration values, or extracted language values (like from an EPUB file) into a valid Language type.
 func ParseLanguage(s string) (Language, error) {
 	// TODO: There may be an exception to some languages that require specific handling such as "zh-CN" for Chinese.
@@ -173,5 +172,5 @@ func MustParseLanguage(s string) Language {
 
 // GetAllSupportedLanguages returns a copy of all supported languages.
 func GetAllSupportedLanguages() []Language {
-	return append([]Language(nil), allSupportedLanguages...)
+	return slices.Clone(allSupportedLanguages)
 }

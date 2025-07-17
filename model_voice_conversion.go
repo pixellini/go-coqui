@@ -10,8 +10,8 @@ type VoiceConversionModel struct {
 	modelType          ModelType
 	dataset            Dataset
 	architecture       Architecture
-	supportedLanguages []Language
 	defaultLanguage    Language
+	supportedLanguages []Language
 }
 
 // Voice Conversion Models for converting one voice to another.
@@ -19,10 +19,10 @@ var (
 	// Multilingual voice conversion.
 	VoiceConversionVCTKFreeVC24 = VoiceConversionModel{
 		modelType:          modelTypeVoiceConversion,
-		supportedLanguages: allSupportedLanguages,
 		dataset:            DatasetVCTK,
 		architecture:       ArchFreevc24,
 		defaultLanguage:    English,
+		supportedLanguages: allSupportedLanguages,
 	}
 )
 
@@ -31,7 +31,7 @@ var allVoiceConversions = []VoiceConversionModel{
 	VoiceConversionVCTKFreeVC24,
 }
 
-func NewVoiceConversionModel(language Language, dataset Dataset, architecture Architecture) VoiceConversionModel {
+func NewVoiceConversion(language Language, dataset Dataset, architecture Architecture) VoiceConversionModel {
 	return VoiceConversionModel{
 		modelType:          modelTypeVoiceConversion,
 		dataset:            dataset,
@@ -46,6 +46,16 @@ func NewVoiceConversionModel(language Language, dataset Dataset, architecture Ar
 // Will need to be updated if we want to include all supported languages.
 func (vc VoiceConversionModel) String() string {
 	return fmt.Sprintf("%s/%s/%s/%s", vc.GetModelType(), vc.GetDataset(), vc.GetDefaultLanguage(), vc.GetArchitecture())
+}
+
+// NameList returns a list of string representations of the model identifier for each supported language.
+func (vc VoiceConversionModel) NameList() []string {
+	var names []string
+	for _, lang := range vc.supportedLanguages {
+		name := fmt.Sprintf("%s/%s/%s/%s", vc.GetModelType(), vc.GetDataset(), lang, vc.GetArchitecture())
+		names = append(names, name)
+	}
+	return names
 }
 
 // IsValid checks if the model identifier is valid.
@@ -85,32 +95,37 @@ func (vc VoiceConversionModel) GetDefaultLanguage() Language {
 	return vc.defaultLanguage
 }
 
-// GetVoiceConversionModelByArchitecture returns all voice conversion models that use the specified architecture.
-func GetVoiceConversionModelByArchitecture(arch Architecture) []VoiceConversionModel {
-	return FilterModelsByArchitecture(allVoiceConversions, arch)
+// GetAllVoiceConversions returns a copy of the list of all predefined voice conversion models.
+func GetAllVoiceConversions() []VoiceConversionModel {
+	return slices.Clone(allVoiceConversions)
 }
 
-// GetVoiceConversionModelByDataset returns all voice conversion models of the specified dataset.
-func GetVoiceConversionModelByDataset(dataset Dataset) []VoiceConversionModel {
-	return FilterModelsByDataset(allVoiceConversions, dataset)
+// GetVoiceConversionByArchitecture returns all voice conversion models that use the specified architecture.
+func GetVoiceConversionByArchitecture(arch Architecture) []VoiceConversionModel {
+	return filterModelsByArchitecture(allVoiceConversions, arch)
 }
 
-// GetVoiceConversionModelByLanguage returns all voice conversion models that support the specified language.
-func GetVoiceConversionModelByLanguage(language Language) []VoiceConversionModel {
-	return FilterModelsBySupportedLanguages(allVoiceConversions, []Language{language})
+// GetVoiceConversionByDataset returns all voice conversion models of the specified dataset.
+func GetVoiceConversionByDataset(dataset Dataset) []VoiceConversionModel {
+	return filterModelsByDataset(allVoiceConversions, dataset)
 }
 
-// GetVoiceConversionModelBySupportedLanguages returns all voice conversion models that support any of the specified languages.
-func GetVoiceConversionModelBySupportedLanguages(languages []Language) []VoiceConversionModel {
-	return FilterModelsBySupportedLanguages(allVoiceConversions, languages)
+// GetVoiceConversionByLanguage returns all voice conversion models that support the specified language.
+func GetVoiceConversionByLanguage(language Language) []VoiceConversionModel {
+	return filterModelsBySupportedLanguages(allVoiceConversions, []Language{language})
 }
 
-// GetVoiceConversionModelByDefaultLanguage returns all voice conversion models with the specified default language.
-func GetVoiceConversionModelByDefaultLanguage(language Language) []VoiceConversionModel {
-	return FilterModelsByDefaultLanguage(allVoiceConversions, language)
+// GetVoiceConversionBySupportedLanguages returns all voice conversion models that support any of the specified languages.
+func GetVoiceConversionBySupportedLanguages(languages []Language) []VoiceConversionModel {
+	return filterModelsBySupportedLanguages(allVoiceConversions, languages)
 }
 
-// GetVoiceConversionModelMultilingual returns all voice conversion models that support multiple languages.
-func GetVoiceConversionModelMultilingual() []VoiceConversionModel {
-	return FilterModelsMultilingual(allVoiceConversions)
+// GetVoiceConversionByDefaultLanguage returns all voice conversion models with the specified default language.
+func GetVoiceConversionByDefaultLanguage(language Language) []VoiceConversionModel {
+	return filterModelsByDefaultLanguage(allVoiceConversions, language)
+}
+
+// GetVoiceConversionMultilingual returns all voice conversion models that support multiple languages.
+func GetVoiceConversionMultilingual() []VoiceConversionModel {
+	return filterModelsMultilingual(allVoiceConversions)
 }

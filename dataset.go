@@ -98,5 +98,5 @@ func (d Dataset) IsValid() bool {
 
 // GetAllDatasets returns a list of all predefined dataset identifiers.
 func GetAllDatasets() []Dataset {
-	return append([]Dataset(nil), allDatasets...)
+	return slices.Clone(allDatasets)
 }

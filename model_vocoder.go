@@ -5,12 +5,14 @@ import (
 	"slices"
 )
 
+// I think we can completely remove this struct and use Model instead.
+// They are basically the same thing and I have to keep repeating the same methods.
 type VocoderModel struct {
 	modelType          ModelType
 	dataset            Dataset
 	architecture       Architecture
-	supportedLanguages []Language
 	defaultLanguage    Language
+	supportedLanguages []Language
 }
 
 // Predefined Vocoder Models for use with TTS synthesis.
@@ -22,24 +24,24 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetLibriTTS,
 		architecture:       ArchWavegrad,
-		supportedLanguages: allSupportedLanguages, // Universal vocoder.
 		defaultLanguage:    English,
+		supportedLanguages: allSupportedLanguages, // Universal vocoder.
 	}
 
 	VocoderWavegradEK1 = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetEK1,
 		architecture:       ArchWavegrad,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	VocoderWavegradThorsten = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetThorsten,
 		architecture:       ArchWavegrad,
-		supportedLanguages: []Language{German},
 		defaultLanguage:    German,
+		supportedLanguages: []Language{German},
 	}
 
 	// Fullband MelGAN architecture vocoders.
@@ -47,16 +49,16 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetLibriTTS,
 		architecture:       ArchFullbandMelgan,
-		supportedLanguages: allSupportedLanguages, // Universal vocoder.
 		defaultLanguage:    English,
+		supportedLanguages: allSupportedLanguages, // Universal vocoder.
 	}
 
 	VocoderFullbandMelganThorsten = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetThorsten,
 		architecture:       ArchFullbandMelgan,
-		supportedLanguages: []Language{German},
 		defaultLanguage:    German,
+		supportedLanguages: []Language{German},
 	}
 
 	// Multiband MelGAN architecture vocoders.
@@ -64,16 +66,16 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchMultibandMelgan,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	VocoderMultibandMelganMai = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetMai,
 		architecture:       ArchMultibandMelgan,
-		supportedLanguages: []Language{Ukrainian},
 		defaultLanguage:    Ukrainian,
+		supportedLanguages: []Language{Ukrainian},
 	}
 
 	// HiFi-GAN v1 architecture vocoders.
@@ -81,16 +83,16 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetThorsten,
 		architecture:       ArchHifiganV1,
-		supportedLanguages: []Language{German},
 		defaultLanguage:    German,
+		supportedLanguages: []Language{German},
 	}
 
 	VocoderHifiganV1Kokoro = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetKokoro,
 		architecture:       ArchHifiganV1,
-		supportedLanguages: []Language{Japanese},
 		defaultLanguage:    Japanese,
+		supportedLanguages: []Language{Japanese},
 	}
 
 	// HiFi-GAN v2 architecture vocoders.
@@ -98,32 +100,32 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchHifiganV2,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	VocoderHifiganV2Blizzard2013 = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetBlizzard2013,
 		architecture:       ArchHifiganV2,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	VocoderHifiganV2VCTK = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetVCTK,
 		architecture:       ArchHifiganV2,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	VocoderHifiganV2Sam = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetSam,
 		architecture:       ArchHifiganV2,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	// HiFi-GAN (generic) architecture vocoders.
@@ -131,16 +133,16 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetCommonVoice,
 		architecture:       ArchHifigan,
-		supportedLanguages: []Language{Turkish},
 		defaultLanguage:    Turkish,
+		supportedLanguages: []Language{Turkish},
 	}
 
 	VocoderHifiganCommonVoiceBelarusian = VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetCommonVoice,
 		architecture:       ArchHifigan,
-		supportedLanguages: []Language{Belarusian},
 		defaultLanguage:    Belarusian,
+		supportedLanguages: []Language{Belarusian},
 	}
 
 	// UnivNet architecture vocoders.
@@ -148,8 +150,8 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchUnivnet,
-		supportedLanguages: []Language{English},
 		defaultLanguage:    English,
+		supportedLanguages: []Language{English},
 	}
 
 	// Parallel WaveGAN architecture vocoders.
@@ -157,8 +159,8 @@ var (
 		modelType:          modelTypeVocoder,
 		dataset:            DatasetMai,
 		architecture:       ArchParallelWavegan,
-		supportedLanguages: []Language{Dutch},
 		defaultLanguage:    Dutch,
+		supportedLanguages: []Language{Dutch},
 	}
 )
 
@@ -199,13 +201,13 @@ var allVocoders = []VocoderModel{
 }
 
 // NewVocoderModel creates a new vocoder model identifier.
-func NewVocoderModel(language Language, dataset Dataset, architecture Architecture) VocoderModel {
+func NewVocoder(language Language, dataset Dataset, architecture Architecture) VocoderModel {
 	return VocoderModel{
 		modelType:          modelTypeVocoder,
 		dataset:            dataset,
 		architecture:       architecture,
-		supportedLanguages: []Language{Language(language)},
 		defaultLanguage:    Language(language),
+		supportedLanguages: []Language{Language(language)},
 	}
 }
 
@@ -214,6 +216,16 @@ func NewVocoderModel(language Language, dataset Dataset, architecture Architectu
 // Will need to be updated if we want to include all supported languages.
 func (v VocoderModel) String() string {
 	return fmt.Sprintf("%s/%s/%s/%s", v.GetModelType(), v.GetDataset(), v.GetDefaultLanguage(), v.GetArchitecture())
+}
+
+// NameList returns a list of string representations of the model identifier for each supported language.
+func (v VocoderModel) NameList() []string {
+	var names []string
+	for _, lang := range v.supportedLanguages {
+		name := fmt.Sprintf("%s/%s/%s/%s", v.GetModelType(), v.GetDataset(), lang, v.GetArchitecture())
+		names = append(names, name)
+	}
+	return names
 }
 
 // IsValid checks if the model identifier is valid.
@@ -243,42 +255,47 @@ func (v VocoderModel) GetDataset() Dataset {
 	return v.dataset
 }
 
-// GetSupportedLanguages returns the supported languages.
-func (v VocoderModel) GetSupportedLanguages() []Language {
-	return v.supportedLanguages
-}
-
 // GetDefaultLanguage returns the default language.
 func (v VocoderModel) GetDefaultLanguage() Language {
 	return v.defaultLanguage
 }
 
-// GetVocoderModelsByArchitecture returns all vocoder models that use the specified architecture.
-func GetVocoderModelsByArchitecture(arch Architecture) []VocoderModel {
-	return FilterModelsByArchitecture(allVocoders, arch)
+// GetSupportedLanguages returns the supported languages.
+func (v VocoderModel) GetSupportedLanguages() []Language {
+	return v.supportedLanguages
 }
 
-// GetVocoderModelsByDataset returns all vocoder models of the specified dataset.
-func GetVocoderModelsByDataset(dataset Dataset) []VocoderModel {
-	return FilterModelsByDataset(allVocoders, dataset)
+// GetAllVocoders returns a copy of the list of all predefined vocoder models.
+func GetAllVocoders() []VocoderModel {
+	return slices.Clone(allVocoders)
 }
 
-// GetVocoderModelsByLanguage returns all vocoder models that support the specified language.
-func GetVocoderModelsByLanguage(language Language) []VocoderModel {
-	return FilterModelsBySupportedLanguages(allVocoders, []Language{language})
+// GetVocodersByArchitecture returns all vocoder models that use the specified architecture.
+func GetVocodersByArchitecture(arch Architecture) []VocoderModel {
+	return filterModelsByArchitecture(allVocoders, arch)
 }
 
-// GetVocoderModelsBySupportedLanguages returns all vocoder models that support any of the specified languages.
-func GetVocoderModelsBySupportedLanguages(languages []Language) []VocoderModel {
-	return FilterModelsBySupportedLanguages(allVocoders, languages)
+// GetVocodersByDataset returns all vocoder models of the specified dataset.
+func GetVocodersByDataset(dataset Dataset) []VocoderModel {
+	return filterModelsByDataset(allVocoders, dataset)
 }
 
-// GetVocoderModelsByDefaultLanguage returns all vocoder models with the specified default language.
-func GetVocoderModelsByDefaultLanguage(language Language) []VocoderModel {
-	return FilterModelsByDefaultLanguage(allVocoders, language)
+// GetVocodersByLanguage returns all vocoder models that support the specified language.
+func GetVocodersByLanguage(language Language) []VocoderModel {
+	return filterModelsBySupportedLanguages(allVocoders, []Language{language})
 }
 
-// GetVocoderModelsMultilingual returns all vocoder models that support multiple languages.
-func GetVocoderModelsMultilingual() []VocoderModel {
-	return FilterModelsMultilingual(allVocoders)
+// GetVocodersBySupportedLanguages returns all vocoder models that support any of the specified languages.
+func GetVocodersBySupportedLanguages(languages []Language) []VocoderModel {
+	return filterModelsBySupportedLanguages(allVocoders, languages)
+}
+
+// GetVocodersByDefaultLanguage returns all vocoder models with the specified default language.
+func GetVocodersByDefaultLanguage(language Language) []VocoderModel {
+	return filterModelsByDefaultLanguage(allVocoders, language)
+}
+
+// GetVocodersMultilingual returns all vocoder models that support multiple languages.
+func GetVocodersMultilingual() []VocoderModel {
+	return filterModelsMultilingual(allVocoders)
 }

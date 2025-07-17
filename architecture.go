@@ -97,7 +97,7 @@ var allArchitectures = []Architecture{
 	ArchFreevc24,
 }
 
-// Strings returns a slice of all architecture names as strings.
+// Strings returns the architecture name as a string.
 func (a Architecture) String() string {
 	return string(a)
 }
@@ -107,7 +107,7 @@ func (a Architecture) IsValid() bool {
 	return slices.Contains(allArchitectures, a)
 }
 
-// GetAllArchitectures returns a slice of all predefined architectures.
-func GetAllArchitectures() []Architecture {
-	return append([]Architecture(nil), allArchitectures...)
+// GetAllModelArchitectures returns a list of all predefined architectures.
+func GetAllModelArchitectures() []Architecture {
+	return slices.Clone(allArchitectures)
 }

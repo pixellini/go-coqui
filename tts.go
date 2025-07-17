@@ -7,73 +7,96 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 // TTS represents a text-to-speech synthesis engine.
 // Configured with a specific model, language, and device settings.
+// TTS holds the configuration for TTS synthesis.
 type TTS struct {
-	// config holds the TTS configuration options.
-	// This includes model type, language, device, and other parameters.
-	config *Config
+	// Model specifies the TTS model to use for synthesis.
+	// This can be a specific model like ModelXTTSv2 or a custom Model.
+	model TTSModel
+	// Vocoder specifies the vocoder model to use for audio synthesis.
+	// If not set, the default vocoder for the model will be used.
+	// This is useful for advanced configurations where a specific vocoder is desired.
+	vocoder VocoderModel
+	// Language specifies the target language for synthesis.
+	// See language.go for all supported language codes.
+	language Language
+	// SpeakerSample is the path to the speaker sample file (XTTS only).
+	// Should be a clear audio sample of the desired voice (1-3 minutes recommended).
+	speakerSample string
+	// SpeakerIdx is the speaker index identifier (VITS only).
+	// Use speaker IDs like "p225", "p287", ett. from the VCTK dataset.
+	speakerIdx string
+	// OutputDir is the output directory for generated audio files.
+	// If empty, files are saved to the current working directory.
+	outputDir string
+	// Device specifies the compute device (auto/cpu/cuda/mps).
+	// Use "auto" for automatic detection, "cuda" for GPU acceleration if available.
+	device Device
+	// MaxRetries is the maximum number of synthesis attempts on failure.
+	// Recommended range is 1-5; higher values increase reliability but slow down failure recovery.
+	maxRetries int
 }
 
-// ErrInvalidConfig is returned when TTS configuration validation fails.
-var ErrInvalidConfig = errors.New("invalid configuration")
+const (
+	defaultLanguage   = English
+	defaultOutputDir  = "./dist"
+	defaultDevice     = DeviceAuto
+	defaultMaxRetries = 3
+)
 
 // New creates a new TTS instance with the specified configuration options.
 func New(options ...Option) (*TTS, error) {
 	// Build the config, apply the defaults
 	tts := &TTS{
-		config: &Config{
-			Language:   English,
-			TTSModel:   ModelXTTSv2, // Default to XTTS v2.
-			MaxRetries: 3,           // Default retry count.
-			Device:     DeviceAuto,  // Auto-detect the best device.
-		},
+		model:      ModelXTTSv2,
+		language:   defaultLanguage,
+		outputDir:  defaultOutputDir,
+		device:     defaultDevice,
+		maxRetries: defaultMaxRetries,
 	}
 
 	for _, option := range options {
-		option.apply(tts)
+		err := option.apply(tts)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create TTS instance: %w", err)
+		}
 	}
 
-	// Validate configuration.
-	if err := tts.config.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid TTS configuration: %w", err)
-	}
-
-	fmt.Printf("\nUsing model: %s", tts.config.GetModelName())
+	fmt.Printf("\nUsing model: %s", tts.ModelName())
 
 	return tts, nil
 }
 
-/* The following are convenience constructors for common TTS models. */
-
 // NewWithModelXttsV2 creates a new TTS instance configured for the XTTS v2 model.
 // Requires a speaker sample file path for voice cloning.
-func NewWithModelXttsV2(speakerWav string, options ...Option) (*TTS, error) {
+func NewWithModelXttsV2(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithTTSModel(ModelXTTSv2),
-		WithSpeakerWav(speakerWav),
+		WithModel(ModelXTTSv2),
+		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
 
 // NewWithModelXttsV1 creates a new TTS instance configured for the XTTS v1.1 model.
 // Requires a speaker sample file path for voice cloning.
-func NewWithModelXttsV1(speakerWav string, options ...Option) (*TTS, error) {
+func NewWithModelXttsV1(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithTTSModel(ModelXTTSv1),
-		WithSpeakerWav(speakerWav),
+		WithModel(ModelXTTSv1),
+		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
 
 // NewWithModelYourTTS creates a new TTS instance configured for the YourTTS model.
 // Requires a speaker sample file path for voice cloning.
-func NewWithModelYourTTS(speakerWav string, options ...Option) (*TTS, error) {
+func NewWithModelYourTTS(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithTTSModel(ModelYourTTS),
-		WithSpeakerWav(speakerWav),
+		WithModel(ModelYourTTS),
+		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
@@ -81,63 +104,8 @@ func NewWithModelYourTTS(speakerWav string, options ...Option) (*TTS, error) {
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
 func NewWithModelBark(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithTTSModel(ModelBark),
+		WithModel(ModelBark),
 	}, options...)
-	return New(opts...)
-}
-
-// NewWithSpecificModel creates a new TTS instance with a specific Model.
-// This provides access to all available Coqui TTS models.
-func NewFromModel(modelId TTSModel, options ...Option) (*TTS, error) {
-	opts := append([]Option{
-		WithTTSModel(modelId),
-	}, options...)
-	return New(opts...)
-}
-
-// NewFromCustomModel creates a new TTS instance from a custom TTSModel.
-// This is useful for models that are not predefined in the Coqui TTS library.
-func NewFromCustomModel(model TTSModel, options ...Option) (*TTS, error) {
-	customModel := NewCustomTTSModel(model.defaultLanguage, model.dataset, model.architecture)
-	if !customModel.IsValid() {
-		return nil, fmt.Errorf("invalid custom TTS model specified: %s", model.String())
-	}
-
-	opts := append([]Option{
-		WithCustomModel(customModel),
-	}, options...)
-
-	return New(opts...)
-}
-
-// NewFromConfig creates a new TTS instance from a Config struct.
-// Allows loading configuration from JSON/YAML files with optional overrides.
-// Additional Option parameters can override config file settings.
-func NewFromConfig(config *Config, options ...Option) (*TTS, error) {
-	if config == nil {
-		return nil, fmt.Errorf("config cannot be nil")
-	}
-
-	opts := []Option{
-		WithTTSModel(config.TTSModel),
-		WithLanguage(config.Language),
-		WithDevice(config.Device),
-		WithMaxRetries(config.MaxRetries),
-	}
-
-	if config.SpeakerWavFile != "" {
-		opts = append(opts, WithSpeakerWav(config.SpeakerWavFile))
-	}
-	if config.SpeakerIdx != "" {
-		opts = append(opts, WithSpeakerIndex(config.SpeakerIdx))
-	}
-	if config.DistDir != "" {
-		opts = append(opts, WithDistDir(config.DistDir))
-	}
-
-	// Allow additional options to override config file settings.
-	opts = append(opts, options...)
-
 	return New(opts...)
 }
 
@@ -163,36 +131,237 @@ func (t TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byte
 		return nil, errors.New("text cannot be empty")
 	}
 
-	_, err := os.Stat(output)
+	// Create the dist directory if it doesn't exist
+	if err := os.MkdirAll(t.outputDir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create dist directory: %w", err)
+	}
+
+	outputPath := t.outputDir + output
+
+	_, err := os.Stat(outputPath)
 	if err == nil {
 		return nil, fmt.Errorf("audio file already created")
 	}
 
 	var lastErr error
-	for attempt := 1; attempt <= t.config.MaxRetries; attempt++ {
-		cmdOutput, err := t.exec(ctx, text, output)
+	for attempt := 1; attempt <= t.maxRetries; attempt++ {
+		cmdOutput, err := t.run(ctx, text, outputPath)
 		if err == nil {
 			return cmdOutput, nil
 		}
 
 		lastErr = err
 		log.Print(err)
-		log.Printf("TTS failed — (attempt %d/%d)\n", attempt, t.config.MaxRetries)
+		log.Printf("TTS failed — (attempt %d/%d)\n", attempt, t.maxRetries)
 	}
 
 	return nil, lastErr
 }
 
-// Config returns a copy of the current TTS configuration.
-// The returned Config can be safely modified without affecting the TTS instance.
-func (t TTS) GetConfig() Config {
-	return *t.config
+// ModelName returns the full Coqui TTS model name to use.
+// Returns empty string if no model is configured.
+// Format: tts_models/{language}/{dataset}/{architecture}
+// For multilingual models, uses "multilingual" instead of specific language.
+func (t TTS) ModelName() string {
+	// Use "multilingual" for models that support all languages.
+	// NOTE: This is currently a workaround so I can test the functionality.
+	// But this will break if the model supports multiple languages but is not "multilingual" as defined in the model name.
+	// TODO: Fix this to properly handle "multilingual" vs multilingual models.
+	language := t.language.String()
+	if t.model.IsMultilingual() {
+		language = "multilingual"
+	}
+	return fmt.Sprintf("%s/%s/%s/%s", t.model.modelType, language, t.model.dataset, t.model.architecture)
 }
 
-// exec executes the Coqui TTS command with the specified text and output path.
+// VocoderName returns the full Coqui TTS vocoder name to use.
+// Format: vocoder_models/{language}/{dataset}/{architecture}
+func (t TTS) VocoderName() string {
+	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.modelType, t.language, t.vocoder.dataset, t.vocoder.architecture)
+}
+
+// CurrentModel returns the Model being used for synthesis.
+func (t TTS) CurrentModel() TTSModel {
+	return t.model
+}
+
+// CurrentVocoder returns the VocoderModel being used for synthesis.
+func (t TTS) CurrentVocoder() VocoderModel {
+	return t.vocoder
+}
+
+// CurrentLanguage returns the Language being used for synthesis.
+func (t TTS) CurrentLanguage() Language {
+	return t.language
+}
+
+// CurrentSpeakerSample returns the path to the speaker sample file.
+func (t TTS) CurrentSpeakerSample() string {
+	return t.speakerSample
+}
+
+// CurrentSpeakerIndex returns the speaker index identifier.
+func (t TTS) CurrentSpeakerIndex() string {
+	return t.speakerIdx
+}
+
+// CurrentOutputDir returns the output directory where audio files will be saved.
+func (t TTS) CurrentOutputDir() string {
+	return t.outputDir
+}
+
+// CurrentDevice returns the compute device used for synthesis.
+func (t TTS) CurrentDevice() Device {
+	return t.device
+}
+
+// CurrentMaxRetries returns the maximum number of retries for synthesis attempts.
+func (t TTS) CurrentMaxRetries() int {
+	return t.maxRetries
+}
+
+// SetCurrentModel sets the TTS model to use for synthesis.
+func (t *TTS) SetCurrentModel(m TTSModel) error {
+	if !m.IsValid() {
+		return fmt.Errorf("invalid TTS model specified: %s", m.String())
+	}
+	t.model = m
+	return nil
+}
+
+// SetCurrentVocoder sets the vocoder model to use for audio synthesis.
+func (t *TTS) SetCurrentVocoder(v VocoderModel) error {
+	if !v.IsValid() {
+		return fmt.Errorf("invalid vocoder model specified: %s", v.String())
+	}
+	t.vocoder = v
+	return nil
+}
+
+// SetCurrentLanguage sets the target language for synthesis.
+func (t *TTS) SetCurrentLanguage(l Language) error {
+	if !l.IsSupported() {
+		return fmt.Errorf("invalid language specified: %s", l.String())
+	}
+	t.language = l
+	return nil
+}
+
+// SetCurrentSpeaker sets the current speaker for voice cloning.
+func (t *TTS) SetCurrentSpeaker(s string) error {
+	if s == "" {
+		return fmt.Errorf("speaker cannot be empty")
+	}
+	// speaker has an extension (e.g. ".wav", ".mp3").
+	if filepath.Ext(s) != "" && t.model.SupportsVoiceCloning() {
+		t.speakerSample = s
+	} else {
+		t.speakerIdx = s
+	}
+	return nil
+}
+
+// SetCurrentSpeakerSample sets the path to the speaker sample file for voice cloning.
+func (t *TTS) SetCurrentSpeakerSample(samplePath string) error {
+	if samplePath == "" {
+		return fmt.Errorf("speaker sample path cannot be empty")
+	}
+
+	t.speakerSample = samplePath
+	return nil
+}
+
+// SetCurrentSpeakerIndex sets the speaker index identifier for VITS models.
+func (t *TTS) SetCurrentSpeakerIndex(idx string) error {
+	if idx == "" {
+		return fmt.Errorf("speaker index cannot be empty")
+	}
+
+	t.speakerIdx = idx
+	return nil
+}
+
+// SetCurrentOutputDir sets the output directory for generated audio files.
+func (t *TTS) SetCurrentOutputDir(dir string) error {
+	if dir == "" {
+		return fmt.Errorf("output directory cannot be empty")
+	}
+
+	t.outputDir = dir
+	return nil
+}
+
+// SetCurrentDevice sets the compute device for synthesis.
+func (t *TTS) SetCurrentDevice(device Device) error {
+	if !device.IsValid() {
+		return fmt.Errorf("invalid device specified: %s", device.String())
+	}
+
+	t.device = device
+	return nil
+}
+
+// SetCurrentMaxRetries sets the maximum number of retries for synthesis attempts.
+func (t *TTS) SetCurrentMaxRetries(r int) error {
+	if r < 1 {
+		return fmt.Errorf("max retries must be at least 1")
+	}
+
+	t.maxRetries = r
+	return nil
+}
+
+// toArgs converts the TTS configuration to command-line arguments.
+// for the underlying Coqui TTS Python process.
+// TODO: There are other arguments that can be added based on the model type.
+// There's also a lot of room for improvement here, but for now,
+// this function generates the basic arguments needed for synthesis.
+func (t TTS) toArgs() []string {
+	// Resolve "auto" device to actual device.
+	device := t.device
+	if device == DeviceAuto {
+		device = detectDevice()
+	}
+
+	args := []string{
+		"--model_name", t.ModelName(),
+		"--device", device.String(),
+	}
+
+	// Explicitly set CUDA usage based on device.
+	if device == DeviceCUDA {
+		args = append(args, "--use_cuda", "true")
+	}
+
+	// TODO: Handle vocoder if specified.
+
+	// TODO: Handle Voice Conversion models.
+
+	// Handle voice cloning models (XTTS variants, YourTTS).
+	if t.model.SupportsVoiceCloning() {
+		if t.speakerSample != "" {
+			args = append(args, "--speaker_wav", t.speakerSample)
+		}
+
+		lang := t.language.String()
+		if !t.model.SupportsLanguage(t.language) {
+			fmt.Println("\nWarning: Model does not support specified language, using default language instead.")
+			lang = string(t.model.defaultLanguage)
+		}
+		args = append(args, "--language_idx", lang)
+	}
+
+	if t.speakerIdx != "" {
+		args = append(args, "--speaker_idx", t.speakerIdx)
+	}
+
+	return args
+}
+
+// run executes the Coqui TTS command with the specified text and output path.
 // This is an internal method that handles the actual subprocess execution.
-func (t TTS) exec(ctx context.Context, text, output string) ([]byte, error) {
-	args := t.config.ToArgs()
+func (t TTS) run(ctx context.Context, text, output string) ([]byte, error) {
+	args := t.toArgs()
 	args = append(args,
 		"--text", text,
 		"--out_path", output,

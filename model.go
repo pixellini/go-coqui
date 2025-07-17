@@ -1,5 +1,7 @@
 package coqui
 
+import "slices"
+
 // ModelType represents the category of model.
 type ModelType string
 
@@ -7,6 +9,8 @@ type ModelType string
 type Model interface {
 	// String returns a string representation of the model identifier.
 	String() string
+	// NameList returns a list of string representations of the model identifier for each supported language.
+	NameList() []string
 	// IsValid checks if the model identifier is valid.
 	IsValid() bool
 	// IsMultilingual checks if the model supports multiple languages.
@@ -17,10 +21,10 @@ type Model interface {
 	GetArchitecture() Architecture
 	// GetDataset returns the dataset used by the model.
 	GetDataset() Dataset
-	// GetSupportedLanguages returns the languages supported by the model.
-	GetSupportedLanguages() []Language
 	// GetDefaultLanguage returns the default language of the model.
 	GetDefaultLanguage() Language
+	// GetSupportedLanguages returns the languages supported by the model.
+	GetSupportedLanguages() []Language
 }
 
 const (
@@ -39,27 +43,13 @@ var allModelTypes = []ModelType{
 	modelTypeVoiceConversion,
 }
 
-// GetAllModelTypes returns a slice of all predefined model types.
+// GetAllModelTypes returns  all predefined model types.
 func GetAllModelTypes() []ModelType {
-	return append([]ModelType(nil), allModelTypes...)
+	return slices.Clone(allModelTypes)
 }
 
-// Generic filter functions that work with any Model implementation.
-// These are simple, readable, and work with both Model and Vocoder types.
-
-// FilterModelsByType filters any slice of Model by type
-func FilterModelsByType[T Model](models []T, modelType ModelType) []T {
-	var result []T
-	for _, model := range models {
-		if model.GetModelType() == modelType {
-			result = append(result, model)
-		}
-	}
-	return result
-}
-
-// FilterModelsByArchitecture filters any slice of Model by architecture.
-func FilterModelsByArchitecture[T Model](models []T, architecture Architecture) []T {
+// filterModelsByArchitecture filters any slice of Model by architecture.
+func filterModelsByArchitecture[T Model](models []T, architecture Architecture) []T {
 	var result []T
 	for _, model := range models {
 		if model.GetArchitecture() == architecture {
@@ -69,8 +59,8 @@ func FilterModelsByArchitecture[T Model](models []T, architecture Architecture) 
 	return result
 }
 
-// FilterModelsByDataset filters any slice of Model by dataset.
-func FilterModelsByDataset[T Model](models []T, dataset Dataset) []T {
+// filterModelsByDataset filters any slice of Model by dataset.
+func filterModelsByDataset[T Model](models []T, dataset Dataset) []T {
 	var result []T
 	for _, model := range models {
 		if model.GetDataset() == dataset {
@@ -80,8 +70,8 @@ func FilterModelsByDataset[T Model](models []T, dataset Dataset) []T {
 	return result
 }
 
-// FilterModelsBySupportedLanguages filters models that support any of the specified languages.
-func FilterModelsBySupportedLanguages[T Model](models []T, languages []Language) []T {
+// filterModelsBySupportedLanguages filters models that support any of the specified languages.
+func filterModelsBySupportedLanguages[T Model](models []T, languages []Language) []T {
 	var result []T
 	for _, model := range models {
 		modelSupported := model.GetSupportedLanguages()
@@ -99,8 +89,8 @@ func FilterModelsBySupportedLanguages[T Model](models []T, languages []Language)
 	return result
 }
 
-// FilterModelsMultilingual returns all models that support multiple languages.
-func FilterModelsMultilingual[T Model](models []T) []T {
+// filterModelsMultilingual returns all models that support multiple languages.
+func filterModelsMultilingual[T Model](models []T) []T {
 	var result []T
 	for _, model := range models {
 		if model.IsMultilingual() {
@@ -110,8 +100,8 @@ func FilterModelsMultilingual[T Model](models []T) []T {
 	return result
 }
 
-// FilterModelsByDefaultLanguage filters models by their default language.
-func FilterModelsByDefaultLanguage[T Model](models []T, language Language) []T {
+// filterModelsByDefaultLanguage filters models by their default language.
+func filterModelsByDefaultLanguage[T Model](models []T, language Language) []T {
 	var result []T
 	for _, model := range models {
 		if model.GetDefaultLanguage() == language {
