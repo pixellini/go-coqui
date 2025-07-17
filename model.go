@@ -1,7 +1,16 @@
 package coqui
 
+// ModelType represents the category of model.
+type ModelType string
+
 // Model interface defines the common behavior for all model types.
 type Model interface {
+	// String returns a string representation of the model identifier.
+	String() string
+	// IsValid checks if the model identifier is valid.
+	IsValid() bool
+	// IsMultilingual checks if the model supports multiple languages.
+	IsMultilingual() bool
 	// GetType returns the type of the model (e.g., TTS, Vocoder, Voice Conversion).
 	GetModelType() ModelType
 	// GetArchitecture returns the architecture of the model (e.g., Wavegrad, MelGAN).
@@ -12,31 +21,22 @@ type Model interface {
 	GetSupportedLanguages() []Language
 	// GetDefaultLanguage returns the default language of the model.
 	GetDefaultLanguage() Language
-	// IsValid checks if the model identifier is valid.
-	IsValid() bool
-	// IsMultilingual checks if the model supports multiple languages.
-	IsMultilingual() bool
-	// String returns a string representation of the model identifier.
-	String() string
 }
 
-// ModelType represents the category of model.
-type ModelType string
-
 const (
-	// ModelTypeTTS represents text-to-speech models.
-	ModelTypeTTS ModelType = "tts_models"
-	// ModelTypeVocoder represents vocoder models for audio synthesis.
-	ModelTypeVocoder ModelType = "vocoder_models"
-	// ModelTypeVoiceConversion represents voice conversion models.
-	ModelTypeVoiceConversion ModelType = "voice_conversion_models"
+	// modelTypeTTS represents text-to-speech models.
+	modelTypeTTS ModelType = "tts_models"
+	// modelTypeVocoder represents vocoder models for audio synthesis.
+	modelTypeVocoder ModelType = "vocoder_models"
+	// modelTypeVoiceConversion represents voice conversion models.
+	modelTypeVoiceConversion ModelType = "voice_conversion_models"
 )
 
 // allModelTypes contains all predefined model types.
 var allModelTypes = []ModelType{
-	ModelTypeTTS,
-	ModelTypeVocoder,
-	ModelTypeVoiceConversion,
+	modelTypeTTS,
+	modelTypeVocoder,
+	modelTypeVoiceConversion,
 }
 
 // GetAllModelTypes returns a slice of all predefined model types.

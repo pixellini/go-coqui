@@ -17,13 +17,6 @@ type TTS struct {
 	config *Config
 }
 
-// Synthesizer defines the interface for TTS synthesis operations.
-// Implementations should support both blocking and context-aware synthesis.
-type Synthesizer interface {
-	Synthesize(text string) ([]byte, error)
-	SynthesizeContext(ctx context.Context, text string) ([]byte, error)
-}
-
 // ErrInvalidConfig is returned when TTS configuration validation fails.
 var ErrInvalidConfig = errors.New("invalid configuration")
 
@@ -148,6 +141,14 @@ func NewFromConfig(config *Config, options ...Option) (*TTS, error) {
 	return New(opts...)
 }
 
+// Configure applies additional configuration options to the TTS instance.
+// Use this to modify settings after the TTS instance has been created.
+func (t *TTS) Configure(options ...Option) {
+	for _, option := range options {
+		option.apply(t)
+	}
+}
+
 // Synthesize converts text to speech and saves it to the specified output file.
 // This is a convenience method that uses context.Background().
 func (t TTS) Synthesize(text, output string) ([]byte, error) {
@@ -184,16 +185,8 @@ func (t TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byte
 
 // Config returns a copy of the current TTS configuration.
 // The returned Config can be safely modified without affecting the TTS instance.
-func (t TTS) Config() Config {
+func (t TTS) GetConfig() Config {
 	return *t.config
-}
-
-// Configure applies additional configuration options to the TTS instance.
-// Use this to modify settings after the TTS instance has been created.
-func (t *TTS) Configure(options ...Option) {
-	for _, option := range options {
-		option.apply(t)
-	}
 }
 
 // exec executes the Coqui TTS command with the specified text and output path.

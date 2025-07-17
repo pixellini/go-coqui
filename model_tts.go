@@ -29,7 +29,7 @@ type TTSModel struct {
 var (
 	// Multilingual models (support all languages)
 	ModelXTTSv2 = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMultiDataset,
 		architecture:       ArchXTTSv2,
 		supportedLanguages: allSupportedLanguages,
@@ -37,7 +37,7 @@ var (
 	}
 
 	ModelXTTSv1 = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMultiDataset,
 		architecture:       ArchXTTSv1,
 		supportedLanguages: allSupportedLanguages,
@@ -45,7 +45,7 @@ var (
 	}
 
 	ModelYourTTS = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMultiDataset,
 		architecture:       ArchYourTTS,
 		supportedLanguages: allSupportedLanguages,
@@ -53,7 +53,7 @@ var (
 	}
 
 	ModelBark = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMultiDataset,
 		architecture:       ArchBark,
 		supportedLanguages: allSupportedLanguages,
@@ -62,7 +62,7 @@ var (
 
 	// Common Voice (CV) dataset models
 	ModelVITSCV = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCV,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Bulgarian, Czech, Danish, Estonian, Irish, Greek, Croatian, Lithuanian, Latvian, Maltese, Portuguese, Romanian, Slovak, Slovenian, Swedish},
@@ -71,7 +71,7 @@ var (
 
 	// English dataset models
 	ModelTacotron2EK1 = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetEK1,
 		architecture:       ArchTacotron2,
 		supportedLanguages: []Language{English},
@@ -80,7 +80,7 @@ var (
 
 	// LJSpeech dataset models
 	ModelTacotron2DDCLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchTacotron2DDC,
 		supportedLanguages: []Language{English},
@@ -88,7 +88,7 @@ var (
 	}
 
 	ModelTacotron2DDCPhLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchTacotron2DDCPh,
 		supportedLanguages: []Language{English},
@@ -96,7 +96,7 @@ var (
 	}
 
 	ModelGlowTTSLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchGlowTTS,
 		supportedLanguages: []Language{English},
@@ -104,7 +104,7 @@ var (
 	}
 
 	ModelSpeedySpeechLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchSpeedySpeech,
 		supportedLanguages: []Language{English},
@@ -112,7 +112,7 @@ var (
 	}
 
 	ModelTacotron2DCALJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchTacotron2DCA,
 		supportedLanguages: []Language{English},
@@ -120,7 +120,7 @@ var (
 	}
 
 	ModelVITSLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{English},
@@ -128,7 +128,7 @@ var (
 	}
 
 	ModelVITSNeonLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchVITSNeon,
 		supportedLanguages: []Language{English},
@@ -136,7 +136,7 @@ var (
 	}
 
 	ModelFastPitchLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchFastPitch,
 		supportedLanguages: []Language{English},
@@ -144,7 +144,7 @@ var (
 	}
 
 	ModelOverflowLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchOverflow,
 		supportedLanguages: []Language{English},
@@ -152,7 +152,7 @@ var (
 	}
 
 	ModelNeuralHMMLJSpeech = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetLJSpeech,
 		architecture:       ArchNeuralHMM,
 		supportedLanguages: []Language{English},
@@ -161,7 +161,7 @@ var (
 
 	// VCTK dataset models
 	ModelVITSVCTK = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetVCTK,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{English},
@@ -169,7 +169,7 @@ var (
 	}
 
 	ModelFastPitchVCTK = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetVCTK,
 		architecture:       ArchFastPitch,
 		supportedLanguages: []Language{English},
@@ -178,7 +178,7 @@ var (
 
 	// Sam dataset models
 	ModelTacotron2DDCSam = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetSam,
 		architecture:       ArchTacotron2DDC,
 		supportedLanguages: []Language{English},
@@ -187,7 +187,7 @@ var (
 
 	// Blizzard2013 dataset models
 	ModelCapacitronT2C50Blizzard = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetBlizzard2013,
 		architecture:       ArchCapacitronT2C50,
 		supportedLanguages: []Language{English},
@@ -195,7 +195,7 @@ var (
 	}
 
 	ModelCapacitronT2C150v2Blizzard = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetBlizzard2013,
 		architecture:       ArchCapacitronT2C150v2,
 		supportedLanguages: []Language{English},
@@ -204,7 +204,7 @@ var (
 
 	// Multi-dataset English models
 	ModelTortoiseV2 = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMultiDataset,
 		architecture:       ArchTortoise,
 		supportedLanguages: []Language{English},
@@ -213,7 +213,7 @@ var (
 
 	// Jenny dataset models
 	ModelJenny = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetJenny,
 		architecture:       ArchJenny,
 		supportedLanguages: []Language{English},
@@ -222,7 +222,7 @@ var (
 
 	// Mai dataset models (multiple languages)
 	ModelTacotron2DDCMai = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMai,
 		architecture:       ArchTacotron2DDC,
 		supportedLanguages: []Language{Spanish, French, Dutch},
@@ -230,7 +230,7 @@ var (
 	}
 
 	ModelGlowTTSMai = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMai,
 		architecture:       ArchGlowTTS,
 		supportedLanguages: []Language{Ukrainian},
@@ -238,7 +238,7 @@ var (
 	}
 
 	ModelVITSMai = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMai,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Ukrainian},
@@ -247,7 +247,7 @@ var (
 
 	// CSS10 dataset models (multiple languages)
 	ModelVITSCSS10 = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCSS10,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Spanish, French, German, Dutch, Hungarian, Finnish},
@@ -255,7 +255,7 @@ var (
 	}
 
 	ModelVITSNeonCSS10 = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCSS10,
 		architecture:       ArchVITSNeon,
 		supportedLanguages: []Language{German},
@@ -264,7 +264,7 @@ var (
 
 	// Baker dataset models (Chinese)
 	ModelTacotron2DDCGSTBaker = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetBaker,
 		architecture:       ArchTacotron2DDCGST,
 		supportedLanguages: []Language{Chinese},
@@ -273,7 +273,7 @@ var (
 
 	// Thorsten dataset models (German)
 	ModelTacotron2DCAThorsten = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetThorsten,
 		architecture:       ArchTacotron2DCA,
 		supportedLanguages: []Language{German},
@@ -281,7 +281,7 @@ var (
 	}
 
 	ModelVITSThorsten = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetThorsten,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{German},
@@ -289,7 +289,7 @@ var (
 	}
 
 	ModelTacotron2DDCThorsten = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetThorsten,
 		architecture:       ArchTacotron2DDC,
 		supportedLanguages: []Language{German},
@@ -298,7 +298,7 @@ var (
 
 	// Kokoro dataset models (Japanese)
 	ModelTacotron2DDCKokoro = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetKokoro,
 		architecture:       ArchTacotron2DDC,
 		supportedLanguages: []Language{Japanese},
@@ -307,7 +307,7 @@ var (
 
 	// Common Voice dataset models
 	ModelGlowTTSCommonVoice = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCommonVoice,
 		architecture:       ArchGlowTTS,
 		supportedLanguages: []Language{Turkish, Belarusian},
@@ -316,7 +316,7 @@ var (
 
 	// Mai Female dataset models (Italian)
 	ModelGlowTTSMaiFemale = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMaiFemale,
 		architecture:       ArchGlowTTS,
 		supportedLanguages: []Language{Italian},
@@ -324,7 +324,7 @@ var (
 	}
 
 	ModelVITSMaiFemale = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMaiFemale,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Italian, Polish},
@@ -333,7 +333,7 @@ var (
 
 	// Mai Male dataset models (Italian)
 	ModelGlowTTSMaiMale = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMaiMale,
 		architecture:       ArchGlowTTS,
 		supportedLanguages: []Language{Italian},
@@ -341,7 +341,7 @@ var (
 	}
 
 	ModelVITSMaiMale = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetMaiMale,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Italian},
@@ -350,7 +350,7 @@ var (
 
 	// OpenBible dataset models (African languages)
 	ModelVITSOpenBible = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetOpenBible,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Ewe, Hausa, Lin, TwiAkuapem, TwiAsante, Yoruba},
@@ -359,7 +359,7 @@ var (
 
 	// Custom dataset models
 	ModelVITSCustom = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCustom,
 		architecture:       ArchVITS,
 		supportedLanguages: []Language{Catalan, Bengali},
@@ -367,7 +367,7 @@ var (
 	}
 
 	ModelGlowTTSCustom = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCustom,
 		architecture:       ArchGlowTTS,
 		supportedLanguages: []Language{Persian},
@@ -375,7 +375,7 @@ var (
 	}
 
 	ModelVITSMaleCustom = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCustom,
 		architecture:       ArchVITSMale,
 		supportedLanguages: []Language{Bengali},
@@ -383,7 +383,7 @@ var (
 	}
 
 	ModelVITSFemaleCustom = TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            DatasetCustom,
 		architecture:       ArchVITSFemale,
 		supportedLanguages: []Language{Bengali},
@@ -452,7 +452,7 @@ var allTTSModels = []TTSModel{
 // IDEA: It would be cool to add a method that splits the Model Name from a string like "tts_models/en/ek1/tacotron2" into its components.
 func NewTTSModel(language Language, dataset Dataset, architecture Architecture) TTSModel {
 	return TTSModel{
-		modelType:          ModelTypeTTS,
+		modelType:          modelTypeTTS,
 		dataset:            dataset,
 		architecture:       architecture,
 		supportedLanguages: []Language{language},

@@ -89,7 +89,7 @@ func (c Config) ToArgs() []string {
 	// Resolve "auto" device to actual device.
 	device := c.Device
 	if device == DeviceAuto {
-		device = DetectDevice(device)
+		device = detectDevice()
 	}
 
 	args := []string{

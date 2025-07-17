@@ -18,8 +18,8 @@ type VoiceConversionModel struct {
 var (
 	// Multilingual voice conversion.
 	VoiceConversionVCTKFreeVC24 = VoiceConversionModel{
-		modelType:          ModelTypeVoiceConversion,
-		supportedLanguages: GetAllSupportedLanguages(),
+		modelType:          modelTypeVoiceConversion,
+		supportedLanguages: allSupportedLanguages,
 		dataset:            DatasetVCTK,
 		architecture:       ArchFreevc24,
 		defaultLanguage:    English,
@@ -31,9 +31,9 @@ var allVoiceConversions = []VoiceConversionModel{
 	VoiceConversionVCTKFreeVC24,
 }
 
-func NewVoiceConversionModel(language Language, dataset Dataset, architecture Architecture) *VoiceConversionModel {
-	return &VoiceConversionModel{
-		modelType:          ModelTypeVoiceConversion,
+func NewVoiceConversionModel(language Language, dataset Dataset, architecture Architecture) VoiceConversionModel {
+	return VoiceConversionModel{
+		modelType:          modelTypeVoiceConversion,
 		dataset:            dataset,
 		architecture:       architecture,
 		supportedLanguages: []Language{Language(language)},
