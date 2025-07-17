@@ -15,7 +15,7 @@ type VocoderModel struct {
 
 // Predefined Vocoder Models for use with TTS synthesis
 // Vocoders convert mel-spectrograms to audio waveforms
-// Variables organized by architecture type for easier discovery
+// Variables organised by architecture type for easier discovery
 var (
 	// Wavegrad architecture vocoders
 	VocoderWavegradLibriTTS = VocoderModel{
@@ -163,82 +163,82 @@ var (
 )
 
 // allVocoders contains all predefined vocoder model identifiers as pointers
-var allVocoders = []*VocoderModel{
+var allVocoders = []VocoderModel{
 	// Wavegrad vocoders
-	&VocoderWavegradLibriTTS,
-	&VocoderWavegradEK1,
-	&VocoderWavegradThorsten,
+	VocoderWavegradLibriTTS,
+	VocoderWavegradEK1,
+	VocoderWavegradThorsten,
 
 	// Fullband MelGAN vocoders
-	&VocoderFullbandMelganLibriTTS,
-	&VocoderFullbandMelganThorsten,
+	VocoderFullbandMelganLibriTTS,
+	VocoderFullbandMelganThorsten,
 
 	// Multiband MelGAN vocoders
-	&VocoderMultibandMelganLJSpeech,
-	&VocoderMultibandMelganMai,
+	VocoderMultibandMelganLJSpeech,
+	VocoderMultibandMelganMai,
 
 	// HiFi-GAN v1 vocoders
-	&VocoderHifiganV1Thorsten,
-	&VocoderHifiganV1Kokoro,
+	VocoderHifiganV1Thorsten,
+	VocoderHifiganV1Kokoro,
 
 	// HiFi-GAN v2 vocoders
-	&VocoderHifiganV2LJSpeech,
-	&VocoderHifiganV2Blizzard2013,
-	&VocoderHifiganV2VCTK,
-	&VocoderHifiganV2Sam,
+	VocoderHifiganV2LJSpeech,
+	VocoderHifiganV2Blizzard2013,
+	VocoderHifiganV2VCTK,
+	VocoderHifiganV2Sam,
 
 	// HiFi-GAN (generic) vocoders
-	&VocoderHifiganCommonVoiceTurkish,
-	&VocoderHifiganCommonVoiceBelarusian,
+	VocoderHifiganCommonVoiceTurkish,
+	VocoderHifiganCommonVoiceBelarusian,
 
 	// UnivNet vocoders
-	&VocoderUnivnetLJSpeech,
+	VocoderUnivnetLJSpeech,
 
 	// Parallel WaveGAN vocoders
-	&VocoderParallelWaveganMai,
+	VocoderParallelWaveganMai,
 }
 
 // GetType returns the model type
-func (v *VocoderModel) GetType() ModelType {
+func (v VocoderModel) GetType() ModelType {
 	return v.Type
 }
 
 // GetArchitecture returns the model architecture
-func (v *VocoderModel) GetArchitecture() Architecture {
+func (v VocoderModel) GetArchitecture() Architecture {
 	return v.Architecture
 }
 
 // GetDataset returns the model dataset
-func (v *VocoderModel) GetDataset() Dataset {
+func (v VocoderModel) GetDataset() Dataset {
 	return v.Dataset
 }
 
 // GetSupportedLanguages returns the supported languages
-func (v *VocoderModel) GetSupportedLanguages() []Language {
+func (v VocoderModel) GetSupportedLanguages() []Language {
 	return v.SupportedLanguages
 }
 
 // GetDefaultLanguage returns the default language
-func (v *VocoderModel) GetDefaultLanguage() Language {
+func (v VocoderModel) GetDefaultLanguage() Language {
 	return v.DefaultLanguage
 }
 
 // IsValid checks if the model identifier is valid
-func (v *VocoderModel) IsValid() bool {
+func (v VocoderModel) IsValid() bool {
 	containsValidType := slices.Contains(GetAllModelTypes(), v.Type)
 	// Check if the model has a valid type, dataset, architecture, and supported languages
 	return containsValidType && v.Type != "" && v.Dataset != "" && v.Architecture != "" && len(v.SupportedLanguages) > 0
 }
 
 // IsMultilingual returns true if the effective model supports multiple languages.
-func (v *VocoderModel) IsMultilingual() bool {
+func (v VocoderModel) IsMultilingual() bool {
 	return len(v.SupportedLanguages) > 1
 }
 
 // String returns a string representation of the model identifier
 // It will only print the default language.
 // Will need to be updated if we want to include all supported languages.
-func (v *VocoderModel) String() string {
+func (v VocoderModel) String() string {
 	return fmt.Sprintf("%s/%s/%s/%s", v.GetType(), v.GetDataset(), v.GetDefaultLanguage(), v.GetArchitecture())
 }
 
@@ -248,31 +248,31 @@ func NewVocoderModel(language, dataset string, architecture Architecture) Vocode
 }
 
 // GetVocoderModelsByArchitecture returns all vocoder models that use the specified architecture
-func GetVocoderModelsByArchitecture(arch Architecture) []*VocoderModel {
+func GetVocoderModelsByArchitecture(arch Architecture) []VocoderModel {
 	return FilterModelsByArchitecture(allVocoders, arch)
 }
 
 // GetVocoderModelsByDataset returns all vocoder models of the specified dataset
-func GetVocoderModelsByDataset(dataset Dataset) []*VocoderModel {
+func GetVocoderModelsByDataset(dataset Dataset) []VocoderModel {
 	return FilterModelsByDataset(allVocoders, dataset)
 }
 
 // GetVocoderModelsByLanguage returns all vocoder models that support the specified language
-func GetVocoderModelsByLanguage(language Language) []*VocoderModel {
+func GetVocoderModelsByLanguage(language Language) []VocoderModel {
 	return FilterModelsBySupportedLanguages(allVocoders, []Language{language})
 }
 
 // GetVocoderModelsBySupportedLanguages returns all vocoder models that support any of the specified languages
-func GetVocoderModelsBySupportedLanguages(languages []Language) []*VocoderModel {
+func GetVocoderModelsBySupportedLanguages(languages []Language) []VocoderModel {
 	return FilterModelsBySupportedLanguages(allVocoders, languages)
 }
 
 // GetVocoderModelsByDefaultLanguage returns all vocoder models with the specified default language
-func GetVocoderModelsByDefaultLanguage(language Language) []*VocoderModel {
+func GetVocoderModelsByDefaultLanguage(language Language) []VocoderModel {
 	return FilterModelsByDefaultLanguage(allVocoders, language)
 }
 
 // GetVocoderModelsMultilingual returns all vocoder models that support multiple languages
-func GetVocoderModelsMultilingual() []*VocoderModel {
+func GetVocoderModelsMultilingual() []VocoderModel {
 	return FilterModelsMultilingual(allVocoders)
 }

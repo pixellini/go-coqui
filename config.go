@@ -32,7 +32,7 @@ type Config struct {
 }
 
 // GetModel returns the Model being used for synthesis.
-func (c *Config) GetModel() TTSModel {
+func (c Config) GetModel() TTSModel {
 	return c.TTSModel
 }
 
@@ -40,7 +40,7 @@ func (c *Config) GetModel() TTSModel {
 // Returns empty string if no model is configured.
 // Format: tts_models/{language}/{dataset}/{architecture}
 // For multilingual models, uses "multilingual" instead of specific language
-func (c *Config) GetModelName() string {
+func (c Config) GetModelName() string {
 	// Use "multilingual" for models that support all languages
 	// NOTE: This is currently a workaround so I can test the functionality.
 	// But this will break if the model supports multiple languages but is not "multilingual" as defined in the model name.
@@ -54,13 +54,13 @@ func (c *Config) GetModelName() string {
 
 // GetVocoderName returns the full Coqui TTS vocoder name to use.
 // Format: vocoder_models/{language}/{dataset}/{architecture}
-func (c *Config) GetVocoderName() string {
+func (c Config) GetVocoderName() string {
 	return fmt.Sprintf("%s/%s/%s/%s", c.Vocoder.Type, c.Language, c.Vocoder.Dataset, c.Vocoder.Architecture)
 }
 
 // SupportsVoiceCloning returns true if the effective model supports voice cloning.
 // TODO: Add support for more models as needed.
-func (c *Config) SupportsVoiceCloning() bool {
+func (c Config) SupportsVoiceCloning() bool {
 	// XTTS v1, XTTS v2, and YourTTS support voice cloning
 	return c.TTSModel.Architecture == ArchXTTSv2 ||
 		c.TTSModel.Architecture == ArchXTTSv1 ||
@@ -70,14 +70,14 @@ func (c *Config) SupportsVoiceCloning() bool {
 
 // RequiresSpeakerIndex returns true if the effective model requires a speaker index.
 // TODO: Configure models that require speaker index.
-func (c *Config) RequiresSpeakerIndex() bool {
+func (c Config) RequiresSpeakerIndex() bool {
 	return c.TTSModel.Architecture == ArchVITS
 }
 
 // Validate checks if the TTS configuration is valid and returns an error
 // if any configuration values are invalid or incompatible.
 // TODO: Implement proper validation logic for TTS configurations.
-func (c *Config) Validate() error {
+func (c Config) Validate() error {
 	return nil
 }
 
@@ -86,7 +86,7 @@ func (c *Config) Validate() error {
 // TODO: There are other arguments that can be added based on the model type.
 // There's also a lot of room for improvement here, but for now
 // this function generates the basic arguments needed for synthesis.
-func (c *Config) ToArgs() []string {
+func (c Config) ToArgs() []string {
 	// Resolve "auto" device to actual device
 	device := c.Device
 	if device == DeviceAuto {

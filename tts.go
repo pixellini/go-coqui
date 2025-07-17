@@ -133,14 +133,14 @@ func NewFromConfig(config *Config, options ...Option) (*TTS, error) {
 
 // Synthesize converts text to speech and saves it to the specified output file.
 // This is a convenience method that uses context.Background().
-func (t *TTS) Synthesize(text, output string) ([]byte, error) {
+func (t TTS) Synthesize(text, output string) ([]byte, error) {
 	return t.SynthesizeContext(context.Background(), text, output)
 }
 
 // SynthesizeContext converts text to speech with context support for cancellation.
 // Supports automatic retries on failure and returns the command output on success.
 // Returns an error if the output file already exists.
-func (t *TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byte, error) {
+func (t TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byte, error) {
 	if text == "" {
 		return nil, errors.New("text cannot be empty")
 	}
@@ -167,7 +167,7 @@ func (t *TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byt
 
 // Config returns a copy of the current TTS configuration.
 // The returned Config can be safely modified without affecting the TTS instance.
-func (t *TTS) Config() Config {
+func (t TTS) Config() Config {
 	return *t.config
 }
 
@@ -181,7 +181,7 @@ func (t *TTS) Configure(options ...Option) {
 
 // exec executes the Coqui TTS command with the specified text and output path.
 // This is an internal method that handles the actual subprocess execution.
-func (t *TTS) exec(ctx context.Context, text, output string) ([]byte, error) {
+func (t TTS) exec(ctx context.Context, text, output string) ([]byte, error) {
 	args := t.config.ToArgs()
 	args = append(args,
 		"--text", text,

@@ -382,99 +382,99 @@ var (
 )
 
 // allTTSModels contains all predefined TTS model identifiers as pointers
-var allTTSModels = []*TTSModel{
+var allTTSModels = []TTSModel{
 	// Multilingual models
-	&ModelXTTSv2,
-	&ModelXTTSv1,
-	&ModelYourTTS,
-	&ModelBark,
+	ModelXTTSv2,
+	ModelXTTSv1,
+	ModelYourTTS,
+	ModelBark,
 
 	// Common Voice models
-	&ModelVITSCV,
+	ModelVITSCV,
 
 	// English models
-	&ModelTacotron2EK1,
-	&ModelTacotron2DDCLJSpeech,
-	&ModelTacotron2DDCPhLJSpeech,
-	&ModelGlowTTSLJSpeech,
-	&ModelSpeedySpeechLJSpeech,
-	&ModelTacotron2DCALJSpeech,
-	&ModelVITSLJSpeech,
-	&ModelVITSNeonLJSpeech,
-	&ModelFastPitchLJSpeech,
-	&ModelOverflowLJSpeech,
-	&ModelNeuralHMMLJSpeech,
-	&ModelVITSVCTK,
-	&ModelFastPitchVCTK,
-	&ModelTacotron2DDCSam,
-	&ModelCapacitronT2C50Blizzard,
-	&ModelCapacitronT2C150v2Blizzard,
-	&ModelTortoiseV2,
-	&ModelJenny,
+	ModelTacotron2EK1,
+	ModelTacotron2DDCLJSpeech,
+	ModelTacotron2DDCPhLJSpeech,
+	ModelGlowTTSLJSpeech,
+	ModelSpeedySpeechLJSpeech,
+	ModelTacotron2DCALJSpeech,
+	ModelVITSLJSpeech,
+	ModelVITSNeonLJSpeech,
+	ModelFastPitchLJSpeech,
+	ModelOverflowLJSpeech,
+	ModelNeuralHMMLJSpeech,
+	ModelVITSVCTK,
+	ModelFastPitchVCTK,
+	ModelTacotron2DDCSam,
+	ModelCapacitronT2C50Blizzard,
+	ModelCapacitronT2C150v2Blizzard,
+	ModelTortoiseV2,
+	ModelJenny,
 
 	// Multi-language models
-	&ModelTacotron2DDCMai,
-	&ModelGlowTTSMai,
-	&ModelVITSMai,
-	&ModelVITSCSS10,
-	&ModelVITSNeonCSS10,
+	ModelTacotron2DDCMai,
+	ModelGlowTTSMai,
+	ModelVITSMai,
+	ModelVITSCSS10,
+	ModelVITSNeonCSS10,
 
 	// Language-specific models
-	&ModelTacotron2DDCGSTBaker,
-	&ModelTacotron2DCAThorsten,
-	&ModelVITSThorsten,
-	&ModelTacotron2DDCThorsten,
-	&ModelTacotron2DDCKokoro,
-	&ModelGlowTTSCommonVoice,
-	&ModelGlowTTSMaiFemale,
-	&ModelVITSMaiFemale,
-	&ModelGlowTTSMaiMale,
-	&ModelVITSMaiMale,
-	&ModelVITSOpenBible,
-	&ModelVITSCustom,
-	&ModelGlowTTSCustom,
-	&ModelVITSMaleCustom,
-	&ModelVITSFemaleCustom,
+	ModelTacotron2DDCGSTBaker,
+	ModelTacotron2DCAThorsten,
+	ModelVITSThorsten,
+	ModelTacotron2DDCThorsten,
+	ModelTacotron2DDCKokoro,
+	ModelGlowTTSCommonVoice,
+	ModelGlowTTSMaiFemale,
+	ModelVITSMaiFemale,
+	ModelGlowTTSMaiMale,
+	ModelVITSMaiMale,
+	ModelVITSOpenBible,
+	ModelVITSCustom,
+	ModelGlowTTSCustom,
+	ModelVITSMaleCustom,
+	ModelVITSFemaleCustom,
 }
 
 // GetType returns the model type
-func (t *TTSModel) GetType() ModelType {
+func (t TTSModel) GetType() ModelType {
 	return t.Type
 }
 
 // GetArchitecture returns the model architecture
-func (t *TTSModel) GetArchitecture() Architecture {
+func (t TTSModel) GetArchitecture() Architecture {
 	return t.Architecture
 }
 
 // GetDataset returns the model dataset
-func (t *TTSModel) GetDataset() Dataset {
+func (t TTSModel) GetDataset() Dataset {
 	return t.Dataset
 }
 
 // GetSupportedLanguages returns the supported languages
-func (t *TTSModel) GetSupportedLanguages() []Language {
+func (t TTSModel) GetSupportedLanguages() []Language {
 	return t.SupportedLanguages
 }
 
 // GetDefaultLanguage returns the default language
-func (t *TTSModel) GetDefaultLanguage() Language {
+func (t TTSModel) GetDefaultLanguage() Language {
 	return t.DefaultLanguage
 }
 
 // IsValid checks if the model identifier is valid
-func (t *TTSModel) IsValid() bool {
+func (t TTSModel) IsValid() bool {
 	containsValidType := slices.Contains(GetAllModelTypes(), t.Type)
 	// Check if the model has a valid type, dataset, architecture, and supported languages
 	return containsValidType && t.Type != "" && t.Dataset != "" && t.Architecture != "" && len(t.SupportedLanguages) > 0
 }
 
 // IsMultilingual returns true if the effective model supports multiple languages.
-func (t *TTSModel) IsMultilingual() bool {
+func (t TTSModel) IsMultilingual() bool {
 	return len(t.SupportedLanguages) > 1
 }
 
-func (t *TTSModel) SupportsLanguage(lang Language) bool {
+func (t TTSModel) SupportsLanguage(lang Language) bool {
 	for _, supportedLang := range t.SupportedLanguages {
 		if supportedLang == lang {
 			return true
@@ -486,7 +486,7 @@ func (t *TTSModel) SupportsLanguage(lang Language) bool {
 // String returns a string representation of the model identifier
 // It will only print the default language.
 // Will need to be updated if we want to include all supported languages.
-func (t *TTSModel) String() string {
+func (t TTSModel) String() string {
 	return fmt.Sprintf("%s/%s/%s/%s", t.GetType(), t.GetDataset(), t.GetDefaultLanguage(), t.GetArchitecture())
 }
 
@@ -496,31 +496,31 @@ func NewTTSModel(language, dataset string, architecture Architecture) TTSModel {
 }
 
 // GetTTSModelsByArchitecture returns all TTS models that use the specified architecture
-func GetTTSModelsByArchitecture(arch Architecture) []*TTSModel {
+func GetTTSModelsByArchitecture(arch Architecture) []TTSModel {
 	return FilterModelsByArchitecture(allTTSModels, arch)
 }
 
 // GetTTSModelsByDataset returns all TTS models of the specified type
-func GetTTSModelsByDataset(dataset Dataset) []*TTSModel {
+func GetTTSModelsByDataset(dataset Dataset) []TTSModel {
 	return FilterModelsByDataset(allTTSModels, dataset)
 }
 
 // GetTTSModelsByLanguage returns all TTS models that support the specified language (string version)
-func GetTTSModelsByLanguage(language Language) []*TTSModel {
+func GetTTSModelsByLanguage(language Language) []TTSModel {
 	return FilterModelsBySupportedLanguages(allTTSModels, []Language{language})
 }
 
 // GetTTSModelsBySupportedLanguages returns all TTS models that support any of the specified languages
-func GetTTSModelsBySupportedLanguages(languages []Language) []*TTSModel {
+func GetTTSModelsBySupportedLanguages(languages []Language) []TTSModel {
 	return FilterModelsBySupportedLanguages(allTTSModels, languages)
 }
 
 // GetTTSModelsByDefaultLanguage returns all TTS models of the specified type
-func GetTTSModelsByDefaultLanguage(language Language) []*TTSModel {
+func GetTTSModelsByDefaultLanguage(language Language) []TTSModel {
 	return FilterModelsByDefaultLanguage(allTTSModels, language)
 }
 
 // GetTTSModelsMultilingual returns all TTS models that support multiple languages
-func GetTTSModelsMultilingual() []*TTSModel {
+func GetTTSModelsMultilingual() []TTSModel {
 	return FilterModelsMultilingual(allTTSModels)
 }
