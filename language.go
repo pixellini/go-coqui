@@ -1,6 +1,7 @@
 package coqui
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 )
@@ -12,7 +13,7 @@ import (
 type Language string
 
 const (
-	// Major languages
+	// Major languages.
 	English    Language = "en"
 	Spanish    Language = "es"
 	French     Language = "fr"
@@ -23,7 +24,7 @@ const (
 	Chinese    Language = "zh"
 	Japanese   Language = "ja"
 
-	// European languages
+	// European languages.
 	Polish    Language = "pl"
 	Turkish   Language = "tr"
 	Russian   Language = "ru"
@@ -33,48 +34,48 @@ const (
 	Korean    Language = "ko"
 	Arabic    Language = "ar"
 
-	// Nordic languages
+	// Nordic languages.
 	Danish  Language = "da"
 	Finnish Language = "fi"
 	Swedish Language = "sv"
 
-	// Baltic languages
+	// Baltic languages.
 	Estonian   Language = "et"
 	Latvian    Language = "lv"
 	Lithuanian Language = "lt"
 
-	// Slavic languages
+	// Slavic languages.
 	Bulgarian Language = "bg"
 	Croatian  Language = "hr"
 	Slovak    Language = "sk"
 	Slovenian Language = "sl"
 	Romanian  Language = "ro"
 
-	// Other European languages
+	// Other European languages.
 	Greek   Language = "el"
 	Irish   Language = "ga"
 	Maltese Language = "mt"
 	Catalan Language = "ca"
 
-	// Asian languages
+	// Asian languages.
 	Bengali Language = "bn"
 	Persian Language = "fa"
 
-	// African languages
+	// African languages.
 	Ewe    Language = "ewe"
 	Hausa  Language = "hau"
 	Lin    Language = "lin"
 	Yoruba Language = "yor"
 
-	// Ghanaian Twi variants
+	// Ghanaian Twi variants.
 	TwiAkuapem Language = "tw_akuapem"
 	TwiAsante  Language = "tw_asante"
 
-	// Eastern European
+	// Eastern European.
 	Belarusian Language = "be"
 
-	// Other
-	Universal Language = "universal" // Represents a model that supports all languages
+	// Other.
+	Universal Language = "universal" // Represents a model that supports all languages.
 )
 
 // allSupportedLanguages contains the full list of languages supported by the available Coqui TTS models.
@@ -130,7 +131,7 @@ func (l Language) String() string {
 
 // IsValid checks if the language is supported by Coqui TTS.
 // Returns true for all languages in the allSupportedLanguages list.
-func (l Language) IsValid() bool {
+func (l Language) IsSupported() bool {
 	return slices.Contains(allSupportedLanguages, l)
 }
 
@@ -138,30 +139,34 @@ func (l Language) IsValid() bool {
 // Accepts formats like "en-US", "en", "es-ES" and extracts the language code.
 // Returns English as the default for unsupported or invalid languages.
 // This function is useful for converting user input, configuration values, or extracted language values (like from an EPUB file) into a valid Language type.
-func ParseLanguage(s string) Language {
+func ParseLanguage(s string) (Language, error) {
 	// TODO: There may be an exception to some languages that require specific handling such as "zh-CN" for Chinese.
 
-	// Extract language code (before the "-")
+	// Extract language code (before the "-").
 	if idx := strings.Index(s, "-"); idx != -1 {
 		s = s[:idx]
 	}
 
 	lang := Language(strings.ToLower(s))
 
-	// Validate it's a supported language
-	if lang.IsValid() {
-		return lang
+	if lang == "" {
+		return Language(""), fmt.Errorf("invalid language string: %s", s)
 	}
 
-	return English
+	// Validate it's a supported language
+	if !lang.IsSupported() {
+		return Language(""), fmt.Errorf("unsupported language: %s", s)
+	}
+
+	return lang, nil
 }
 
 // MustParseLanguage parses a language string and panics if invalid.
 // Use this when you need to ensure the language is valid at initialisation time.
 func MustParseLanguage(s string) Language {
-	lang := ParseLanguage(s)
-	if !lang.IsValid() {
-		panic("Coqui TTS does not support language: " + s)
+	lang, err := ParseLanguage(s)
+	if err != nil {
+		panic(err)
 	}
 	return lang
 }
