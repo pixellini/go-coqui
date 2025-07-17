@@ -49,29 +49,29 @@ func (c Config) GetModelName() string {
 	if c.TTSModel.IsMultilingual() {
 		language = "multilingual"
 	}
-	return fmt.Sprintf("%s/%s/%s/%s", c.TTSModel.Type, language, c.TTSModel.Dataset, c.TTSModel.Architecture)
+	return fmt.Sprintf("%s/%s/%s/%s", c.TTSModel.modelType, language, c.TTSModel.dataset, c.TTSModel.architecture)
 }
 
 // GetVocoderName returns the full Coqui TTS vocoder name to use.
 // Format: vocoder_models/{language}/{dataset}/{architecture}
 func (c Config) GetVocoderName() string {
-	return fmt.Sprintf("%s/%s/%s/%s", c.Vocoder.Type, c.Language, c.Vocoder.Dataset, c.Vocoder.Architecture)
+	return fmt.Sprintf("%s/%s/%s/%s", c.Vocoder.modelType, c.Language, c.Vocoder.dataset, c.Vocoder.architecture)
 }
 
 // SupportsVoiceCloning returns true if the effective model supports voice cloning.
 // TODO: Add support for more models as needed.
 func (c Config) SupportsVoiceCloning() bool {
 	// XTTS v1, XTTS v2, and YourTTS support voice cloning.
-	return c.TTSModel.Architecture == ArchXTTSv2 ||
-		c.TTSModel.Architecture == ArchXTTSv1 ||
-		c.TTSModel.Architecture == ArchYourTTS ||
-		c.TTSModel.Architecture == ArchBark
+	return c.TTSModel.architecture == ArchXTTSv2 ||
+		c.TTSModel.architecture == ArchXTTSv1 ||
+		c.TTSModel.architecture == ArchYourTTS ||
+		c.TTSModel.architecture == ArchBark
 }
 
 // RequiresSpeakerIndex returns true if the effective model requires a speaker index.
 // TODO: Configure models that require speaker index.
 func (c Config) RequiresSpeakerIndex() bool {
-	return c.TTSModel.Architecture == ArchVITS
+	return c.TTSModel.architecture == ArchVITS
 }
 
 // Validate checks if the TTS configuration is valid and returns an error if any configuration values are invalid or incompatible.

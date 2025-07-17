@@ -3,7 +3,7 @@ package coqui
 // Model interface defines the common behavior for all model types.
 type Model interface {
 	// GetType returns the type of the model (e.g., TTS, Vocoder, Voice Conversion).
-	GetType() ModelType
+	GetModelType() ModelType
 	// GetArchitecture returns the architecture of the model (e.g., Wavegrad, MelGAN).
 	GetArchitecture() Architecture
 	// GetDataset returns the dataset used by the model.
@@ -51,7 +51,7 @@ func GetAllModelTypes() []ModelType {
 func FilterModelsByType[T Model](models []T, modelType ModelType) []T {
 	var result []T
 	for _, model := range models {
-		if model.GetType() == modelType {
+		if model.GetModelType() == modelType {
 			result = append(result, model)
 		}
 	}

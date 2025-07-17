@@ -6,11 +6,11 @@ import (
 )
 
 type VocoderModel struct {
-	Type               ModelType
-	Dataset            Dataset
-	Architecture       Architecture
-	SupportedLanguages []Language
-	DefaultLanguage    Language
+	modelType          ModelType
+	dataset            Dataset
+	architecture       Architecture
+	supportedLanguages []Language
+	defaultLanguage    Language
 }
 
 // Predefined Vocoder Models for use with TTS synthesis.
@@ -19,146 +19,146 @@ type VocoderModel struct {
 var (
 	// Wavegrad architecture vocoders.
 	VocoderWavegradLibriTTS = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetLibriTTS,
-		Architecture:       ArchWavegrad,
-		SupportedLanguages: allSupportedLanguages, // Universal vocoder.
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetLibriTTS,
+		architecture:       ArchWavegrad,
+		supportedLanguages: allSupportedLanguages, // Universal vocoder.
+		defaultLanguage:    English,
 	}
 
 	VocoderWavegradEK1 = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetEK1,
-		Architecture:       ArchWavegrad,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetEK1,
+		architecture:       ArchWavegrad,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	VocoderWavegradThorsten = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetThorsten,
-		Architecture:       ArchWavegrad,
-		SupportedLanguages: []Language{German},
-		DefaultLanguage:    German,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetThorsten,
+		architecture:       ArchWavegrad,
+		supportedLanguages: []Language{German},
+		defaultLanguage:    German,
 	}
 
 	// Fullband MelGAN architecture vocoders.
 	VocoderFullbandMelganLibriTTS = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetLibriTTS,
-		Architecture:       ArchFullbandMelgan,
-		SupportedLanguages: allSupportedLanguages, // Universal vocoder.
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetLibriTTS,
+		architecture:       ArchFullbandMelgan,
+		supportedLanguages: allSupportedLanguages, // Universal vocoder.
+		defaultLanguage:    English,
 	}
 
 	VocoderFullbandMelganThorsten = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetThorsten,
-		Architecture:       ArchFullbandMelgan,
-		SupportedLanguages: []Language{German},
-		DefaultLanguage:    German,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetThorsten,
+		architecture:       ArchFullbandMelgan,
+		supportedLanguages: []Language{German},
+		defaultLanguage:    German,
 	}
 
 	// Multiband MelGAN architecture vocoders.
 	VocoderMultibandMelganLJSpeech = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetLJSpeech,
-		Architecture:       ArchMultibandMelgan,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetLJSpeech,
+		architecture:       ArchMultibandMelgan,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	VocoderMultibandMelganMai = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetMai,
-		Architecture:       ArchMultibandMelgan,
-		SupportedLanguages: []Language{Ukrainian},
-		DefaultLanguage:    Ukrainian,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetMai,
+		architecture:       ArchMultibandMelgan,
+		supportedLanguages: []Language{Ukrainian},
+		defaultLanguage:    Ukrainian,
 	}
 
 	// HiFi-GAN v1 architecture vocoders.
 	VocoderHifiganV1Thorsten = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetThorsten,
-		Architecture:       ArchHifiganV1,
-		SupportedLanguages: []Language{German},
-		DefaultLanguage:    German,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetThorsten,
+		architecture:       ArchHifiganV1,
+		supportedLanguages: []Language{German},
+		defaultLanguage:    German,
 	}
 
 	VocoderHifiganV1Kokoro = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetKokoro,
-		Architecture:       ArchHifiganV1,
-		SupportedLanguages: []Language{Japanese},
-		DefaultLanguage:    Japanese,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetKokoro,
+		architecture:       ArchHifiganV1,
+		supportedLanguages: []Language{Japanese},
+		defaultLanguage:    Japanese,
 	}
 
 	// HiFi-GAN v2 architecture vocoders.
 	VocoderHifiganV2LJSpeech = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetLJSpeech,
-		Architecture:       ArchHifiganV2,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetLJSpeech,
+		architecture:       ArchHifiganV2,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	VocoderHifiganV2Blizzard2013 = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetBlizzard2013,
-		Architecture:       ArchHifiganV2,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetBlizzard2013,
+		architecture:       ArchHifiganV2,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	VocoderHifiganV2VCTK = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetVCTK,
-		Architecture:       ArchHifiganV2,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetVCTK,
+		architecture:       ArchHifiganV2,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	VocoderHifiganV2Sam = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetSam,
-		Architecture:       ArchHifiganV2,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetSam,
+		architecture:       ArchHifiganV2,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	// HiFi-GAN (generic) architecture vocoders.
 	VocoderHifiganCommonVoiceTurkish = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetCommonVoice,
-		Architecture:       ArchHifigan,
-		SupportedLanguages: []Language{Turkish},
-		DefaultLanguage:    Turkish,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetCommonVoice,
+		architecture:       ArchHifigan,
+		supportedLanguages: []Language{Turkish},
+		defaultLanguage:    Turkish,
 	}
 
 	VocoderHifiganCommonVoiceBelarusian = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetCommonVoice,
-		Architecture:       ArchHifigan,
-		SupportedLanguages: []Language{Belarusian},
-		DefaultLanguage:    Belarusian,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetCommonVoice,
+		architecture:       ArchHifigan,
+		supportedLanguages: []Language{Belarusian},
+		defaultLanguage:    Belarusian,
 	}
 
 	// UnivNet architecture vocoders.
 	VocoderUnivnetLJSpeech = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetLJSpeech,
-		Architecture:       ArchUnivnet,
-		SupportedLanguages: []Language{English},
-		DefaultLanguage:    English,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetLJSpeech,
+		architecture:       ArchUnivnet,
+		supportedLanguages: []Language{English},
+		defaultLanguage:    English,
 	}
 
 	// Parallel WaveGAN architecture vocoders.
 	VocoderParallelWaveganMai = VocoderModel{
-		Type:               ModelTypeVocoder,
-		Dataset:            DatasetMai,
-		Architecture:       ArchParallelWavegan,
-		SupportedLanguages: []Language{Dutch},
-		DefaultLanguage:    Dutch,
+		modelType:          ModelTypeVocoder,
+		dataset:            DatasetMai,
+		architecture:       ArchParallelWavegan,
+		supportedLanguages: []Language{Dutch},
+		defaultLanguage:    Dutch,
 	}
 )
 
@@ -198,53 +198,59 @@ var allVocoders = []VocoderModel{
 	VocoderParallelWaveganMai,
 }
 
-// GetType returns the model type.
-func (v VocoderModel) GetType() ModelType {
-	return v.Type
-}
-
-// GetArchitecture returns the model architecture.
-func (v VocoderModel) GetArchitecture() Architecture {
-	return v.Architecture
-}
-
-// GetDataset returns the model dataset.
-func (v VocoderModel) GetDataset() Dataset {
-	return v.Dataset
-}
-
-// GetSupportedLanguages returns the supported languages.
-func (v VocoderModel) GetSupportedLanguages() []Language {
-	return v.SupportedLanguages
-}
-
-// GetDefaultLanguage returns the default language.
-func (v VocoderModel) GetDefaultLanguage() Language {
-	return v.DefaultLanguage
-}
-
-// IsValid checks if the model identifier is valid.
-func (v VocoderModel) IsValid() bool {
-	containsValidType := slices.Contains(GetAllModelTypes(), v.Type)
-	// Check if the model has a valid type, dataset, architecture, and supported languages.
-	return containsValidType && v.Type != "" && v.Dataset != "" && v.Architecture != "" && len(v.SupportedLanguages) > 0
-}
-
-// IsMultilingual returns true if the effective model supports multiple languages.
-func (v VocoderModel) IsMultilingual() bool {
-	return len(v.SupportedLanguages) > 1
+// NewVocoderModel creates a new vocoder model identifier.
+func NewVocoderModel(language Language, dataset Dataset, architecture Architecture) *VocoderModel {
+	return &VocoderModel{
+		modelType:          ModelTypeVocoder,
+		dataset:            dataset,
+		architecture:       architecture,
+		supportedLanguages: []Language{Language(language)},
+		defaultLanguage:    Language(language),
+	}
 }
 
 // String returns a string representation of the model identifier.
 // It will only print the default language.
 // Will need to be updated if we want to include all supported languages.
 func (v VocoderModel) String() string {
-	return fmt.Sprintf("%s/%s/%s/%s", v.GetType(), v.GetDataset(), v.GetDefaultLanguage(), v.GetArchitecture())
+	return fmt.Sprintf("%s/%s/%s/%s", v.GetModelType(), v.GetDataset(), v.GetDefaultLanguage(), v.GetArchitecture())
 }
 
-// NewVocoderModel creates a new vocoder model identifier.
-func NewVocoderModel(language, dataset string, architecture Architecture) VocoderModel {
-	return VocoderModel{}
+// IsValid checks if the model identifier is valid.
+func (v VocoderModel) IsValid() bool {
+	containsValidType := slices.Contains(GetAllModelTypes(), v.modelType)
+	// Check if the model has a valid type, dataset, architecture, and supported languages.
+	return containsValidType && v.modelType != "" && v.dataset != "" && v.architecture != "" && len(v.supportedLanguages) > 0
+}
+
+// IsMultilingual returns true if the effective model supports multiple languages.
+func (v VocoderModel) IsMultilingual() bool {
+	return len(v.supportedLanguages) > 1
+}
+
+// GetModelType returns the model type.
+func (v VocoderModel) GetModelType() ModelType {
+	return v.modelType
+}
+
+// GetArchitecture returns the model architecture.
+func (v VocoderModel) GetArchitecture() Architecture {
+	return v.architecture
+}
+
+// GetDataset returns the model dataset.
+func (v VocoderModel) GetDataset() Dataset {
+	return v.dataset
+}
+
+// GetSupportedLanguages returns the supported languages.
+func (v VocoderModel) GetSupportedLanguages() []Language {
+	return v.supportedLanguages
+}
+
+// GetDefaultLanguage returns the default language.
+func (v VocoderModel) GetDefaultLanguage() Language {
+	return v.defaultLanguage
 }
 
 // GetVocoderModelsByArchitecture returns all vocoder models that use the specified architecture.

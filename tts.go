@@ -95,10 +95,25 @@ func NewWithModelBark(options ...Option) (*TTS, error) {
 
 // NewWithSpecificModel creates a new TTS instance with a specific Model.
 // This provides access to all available Coqui TTS models.
-func NewWithSpecificModel(modelId TTSModel, options ...Option) (*TTS, error) {
+func NewFromModel(modelId TTSModel, options ...Option) (*TTS, error) {
 	opts := append([]Option{
 		WithTTSModel(modelId),
 	}, options...)
+	return New(opts...)
+}
+
+// NewFromCustomModel creates a new TTS instance from a custom TTSModel.
+// This is useful for models that are not predefined in the Coqui TTS library.
+func NewFromCustomModel(model TTSModel, options ...Option) (*TTS, error) {
+	customModel := NewCustomTTSModel(model.defaultLanguage, model.dataset, model.architecture)
+	if !customModel.IsValid() {
+		return nil, fmt.Errorf("invalid custom TTS model specified: %s", model.String())
+	}
+
+	opts := append([]Option{
+		WithCustomModel(customModel),
+	}, options...)
+
 	return New(opts...)
 }
 

@@ -14,23 +14,36 @@ func (c optionFunc) apply(tts *TTS) {
 
 // WithTTSModel sets the TTS model to use for synthesis.
 // This allows access to all available Coqui TTS models.
+// If the model is not valid, it will panic with an error message.
+// Use WithCustomModel for custom models that may not be predefined.
 func WithTTSModel(model TTSModel) Option {
 	return optionFunc(func(t *TTS) {
+		// If the model is not valid, return an error.
+		if !model.IsValid() {
+			panic("invalid TTS model specified: " + model.String())
+		}
 		t.config.TTSModel = model
+	})
+}
+
+// WithCustomModel sets a custom TTS model to use for synthesis.
+// This is useful for models that are not predefined in the Coqui TTS library.
+func WithCustomModel(ttsModel TTSModel) Option {
+	return optionFunc(func(t *TTS) {
+		// We don't need to check if the model is valid here because it's custom.
+		t.config.TTSModel = NewTTSModel(ttsModel.defaultLanguage, ttsModel.dataset, ttsModel.architecture)
 	})
 }
 
 // WithVocoderModel sets a vocoder model to use alongside the TTS model.
 // TODO: Implement proper handling for vocoder models.
-func WithVocoderModel(vocoderModelId Model) Option {
-	// For now, we just use the same function
+func WithVocoderModel(vModel VocoderModel) Option {
 	return nil
 }
 
 // WithVoiceConversionModel sets a voice conversion model to use alongside the TTS model.
 // TODO: Implement proper handling for voice conversion models.
-func WithVoiceConversionModel(vcModel Model) Option {
-	// For now, we just use the same function
+func WithVoiceConversionModel(vcModel VoiceConversionModel) Option {
 	return nil
 }
 
