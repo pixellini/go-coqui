@@ -87,7 +87,7 @@ func WithDistDir(outputPath string) Option {
 // If Auto is specified, the best available device will be detected automatically.
 func WithDevice(device Device) Option {
 	return optionFunc(func(t *TTS) {
-		// If user explicitly chooses Auto, detect the best device
+		// If user explicitly chooses Auto, detect the best device.
 		if device == DeviceAuto {
 			device = DetectDevice(DeviceAuto)
 		}

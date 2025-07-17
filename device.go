@@ -83,7 +83,7 @@ func DetectDevice(d Device) Device {
 		return DeviceMPS
 	}
 
-	// Default to "cpu" if no other device is available
+	// Default to "cpu" if no other device is available.
 	fmt.Println("No GPU detected or CUDA not available, using CPU device.")
 	return DeviceCPU
 }

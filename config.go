@@ -39,9 +39,9 @@ func (c Config) GetModel() TTSModel {
 // GetModelName returns the full Coqui TTS model name to use.
 // Returns empty string if no model is configured.
 // Format: tts_models/{language}/{dataset}/{architecture}
-// For multilingual models, uses "multilingual" instead of specific language
+// For multilingual models, uses "multilingual" instead of specific language.
 func (c Config) GetModelName() string {
-	// Use "multilingual" for models that support all languages
+	// Use "multilingual" for models that support all languages.
 	// NOTE: This is currently a workaround so I can test the functionality.
 	// But this will break if the model supports multiple languages but is not "multilingual" as defined in the model name.
 	// TODO: Fix this to properly handle "multilingual" vs multilingual models.
@@ -61,7 +61,7 @@ func (c Config) GetVocoderName() string {
 // SupportsVoiceCloning returns true if the effective model supports voice cloning.
 // TODO: Add support for more models as needed.
 func (c Config) SupportsVoiceCloning() bool {
-	// XTTS v1, XTTS v2, and YourTTS support voice cloning
+	// XTTS v1, XTTS v2, and YourTTS support voice cloning.
 	return c.TTSModel.Architecture == ArchXTTSv2 ||
 		c.TTSModel.Architecture == ArchXTTSv1 ||
 		c.TTSModel.Architecture == ArchYourTTS ||
@@ -74,20 +74,19 @@ func (c Config) RequiresSpeakerIndex() bool {
 	return c.TTSModel.Architecture == ArchVITS
 }
 
-// Validate checks if the TTS configuration is valid and returns an error
-// if any configuration values are invalid or incompatible.
+// Validate checks if the TTS configuration is valid and returns an error if any configuration values are invalid or incompatible.
 // TODO: Implement proper validation logic for TTS configurations.
 func (c Config) Validate() error {
 	return nil
 }
 
-// ToArgs converts the TTS configuration to command-line arguments
+// ToArgs converts the TTS configuration to command-line arguments.
 // for the underlying Coqui TTS Python process.
 // TODO: There are other arguments that can be added based on the model type.
-// There's also a lot of room for improvement here, but for now
+// There's also a lot of room for improvement here, but for now,
 // this function generates the basic arguments needed for synthesis.
 func (c Config) ToArgs() []string {
-	// Resolve "auto" device to actual device
+	// Resolve "auto" device to actual device.
 	device := c.Device
 	if device == DeviceAuto {
 		device = DetectDevice(device)
@@ -98,16 +97,16 @@ func (c Config) ToArgs() []string {
 		"--device", device.String(),
 	}
 
-	// Explicitly set CUDA usage based on device
+	// Explicitly set CUDA usage based on device.
 	if device == DeviceCUDA {
 		args = append(args, "--use_cuda", "true")
 	}
 
-	// TODO: Handle vocoder if specified
+	// TODO: Handle vocoder if specified.
 
-	// TODO: Handle Voice Conversion models
+	// TODO: Handle Voice Conversion models.
 
-	// Handle voice cloning models (XTTS variants, YourTTS)
+	// Handle voice cloning models (XTTS variants, YourTTS).
 	if c.SupportsVoiceCloning() {
 		if c.SpeakerWavFile != "" {
 			args = append(args, "--speaker_wav", c.SpeakerWavFile)
@@ -116,7 +115,7 @@ func (c Config) ToArgs() []string {
 		lang := c.Language.String()
 		if !c.TTSModel.SupportsLanguage(c.Language) {
 			fmt.Println("\nWarning: Model does not support specified language, using default language instead.")
-			lang = string(c.TTSModel.DefaultLanguage)
+			lang = string(c.TTSModel.defaultLanguage)
 		}
 		args = append(args, "--language_idx", lang)
 	}

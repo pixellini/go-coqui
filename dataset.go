@@ -6,14 +6,14 @@ import "slices"
 type Dataset string
 
 const (
-	// Universal/Multilingual datasets
+	// Universal/Multilingual datasets.
 
 	// These datasets are designed to support multiple languages and are often used for training multilingual models.
 	DatasetLibriTTS Dataset = "libri-tts"
 	// DatasetMultiDataset is a placeholder for datasets that combine multiple datasets or are used in a multi-dataset context.
 	DatasetMultiDataset Dataset = "multi-dataset"
 
-	// English datasets
+	// English datasets.
 
 	// These datasets are primarily focused on English language synthesis and are commonly used for training English TTS models.
 	DatasetLJSpeech Dataset = "ljspeech"
@@ -28,7 +28,7 @@ const (
 	// DatasetJenny is a dataset that includes recordings from the Jenny corpus, often used for English TTS synthesis.
 	DatasetJenny Dataset = "jenny"
 
-	// Language-specific datasets
+	// Language-specific datasets.
 
 	// These datasets are focused on specific languages or regions, often used for training TTS models in those languages.
 	DatasetMai Dataset = "mai"
@@ -49,21 +49,21 @@ const (
 	// DatasetCustom is a placeholder for custom datasets that users may create or use for specific TTS tasks.
 	DatasetCustom Dataset = "custom"
 
-	// Specific dataset variants
+	// Specific dataset variants.
 
-	// DatasetMaiFemale is a variant of the Mai dataset
+	// DatasetMaiFemale is a variant of the Mai dataset.
 	DatasetMaiFemale Dataset = "mai_female"
-	// DatasetMaiMale is a variant of the Mai dataset
+	// DatasetMaiMale is a variant of the Mai dataset.
 	DatasetMaiMale Dataset = "mai_male"
 )
 
-// AllDatasets contains all predefined dataset identifiers
+// AllDatasets contains a list of all predefined dataset identifiers.
 var allDatasets = []Dataset{
-	// Universal/Multilingual datasets
+	// Universal/Multilingual datasets.
 	DatasetLibriTTS,
 	DatasetMultiDataset,
 
-	// English datasets
+	// English datasets.
 	DatasetLJSpeech,
 	DatasetVCTK,
 	DatasetEK1,
@@ -71,7 +71,7 @@ var allDatasets = []Dataset{
 	DatasetBlizzard2013,
 	DatasetJenny,
 
-	// Language-specific datasets
+	// Language-specific datasets.
 	DatasetMai,
 	DatasetCSS10,
 	DatasetCV,
@@ -81,7 +81,7 @@ var allDatasets = []Dataset{
 	DatasetOpenBible,
 	DatasetCustom,
 
-	// Specific dataset variants
+	// Specific dataset variants.
 	DatasetMaiFemale,
 	DatasetMaiMale,
 }
@@ -96,6 +96,7 @@ func (d Dataset) IsValid() bool {
 	return slices.Contains(allDatasets, d)
 }
 
+// GetAllDatasets returns a list of all predefined dataset identifiers.
 func GetAllDatasets() []Dataset {
 	return append([]Dataset(nil), allDatasets...)
 }

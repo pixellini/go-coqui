@@ -12,6 +12,8 @@ import (
 // TTS represents a text-to-speech synthesis engine.
 // Configured with a specific model, language, and device settings.
 type TTS struct {
+	// config holds the TTS configuration options.
+	// This includes model type, language, device, and other parameters.
 	config *Config
 }
 
@@ -31,9 +33,9 @@ func New(options ...Option) (*TTS, error) {
 	tts := &TTS{
 		config: &Config{
 			Language:   English,
-			TTSModel:   ModelXTTSv2, // Default to XTTS v2
-			MaxRetries: 3,           // Default retry count
-			Device:     DeviceAuto,  // Auto-detect the best device
+			TTSModel:   ModelXTTSv2, // Default to XTTS v2.
+			MaxRetries: 3,           // Default retry count.
+			Device:     DeviceAuto,  // Auto-detect the best device.
 		},
 	}
 
@@ -41,7 +43,7 @@ func New(options ...Option) (*TTS, error) {
 		option.apply(tts)
 	}
 
-	// Validate configuration
+	// Validate configuration.
 	if err := tts.config.Validate(); err != nil {
 		return nil, fmt.Errorf("invalid TTS configuration: %w", err)
 	}
@@ -51,7 +53,7 @@ func New(options ...Option) (*TTS, error) {
 	return tts, nil
 }
 
-// The following are convenience constructors for common TTS models.
+/* The following are convenience constructors for common TTS models. */
 
 // NewWithModelXttsV2 creates a new TTS instance configured for the XTTS v2 model.
 // Requires a speaker sample file path for voice cloning.
@@ -125,7 +127,7 @@ func NewFromConfig(config *Config, options ...Option) (*TTS, error) {
 		opts = append(opts, WithDistDir(config.DistDir))
 	}
 
-	// Allow additional options to override config file settings
+	// Allow additional options to override config file settings.
 	opts = append(opts, options...)
 
 	return New(opts...)
