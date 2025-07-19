@@ -43,7 +43,7 @@ type TTS struct {
 
 const (
 	defaultLanguage   = English
-	defaultOutputDir  = "./dist"
+	defaultOutputDir  = "./dist/"
 	defaultDevice     = DeviceAuto
 	defaultMaxRetries = 3
 )
