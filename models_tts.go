@@ -509,11 +509,10 @@ var TTSModels = ModelList[TTSModel]{
 }
 
 // NewTTSModel creates a new custom TTS model identifier.
-// This is useful for models that are not predefined in the Coqui TTS library.
-func NewTTSModel(language Language, dataset Dataset, model BaseModel) (ModelIdentifier, error) {
+func NewTTSModel(model BaseModel, dataset Dataset, language Language) (ModelIdentifier, error) {
 	// TODO: Need a method to point to a custom model via a path.
 	// IDEA: It would be cool to add a method that splits the Model Name from a string like "tts_models/en/ek1/tacotron2" into its components.
-	return NewModel(modelTypeTTS, language, dataset, model)
+	return NewModel(modelTypeTTS, model, dataset, language)
 }
 
 // GetTTSModels returns a list of all predefined TTS models.

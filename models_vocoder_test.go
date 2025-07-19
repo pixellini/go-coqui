@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewVocoder(t *testing.T) {
-	v, err := NewVocoder(English, DatasetVCTK, BaseVoiceConversionFreevc24)
+	v, err := NewVocoder(BaseVoiceConversionFreevc24, DatasetVCTK, English)
 	require.NoError(t, err, "NewVocoder should not return an error for valid input")
 	assert.Equal(t, modelTypeVocoder, v.category, "NewVocoder should set category to modelTypeVocoder")
 }

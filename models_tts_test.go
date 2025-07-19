@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewTTSModel(t *testing.T) {
-	v, err := NewTTSModel(English, DatasetVCTK, BaseVoiceConversionFreevc24)
+	v, err := NewTTSModel(BaseVoiceConversionFreevc24, DatasetVCTK, English)
 	require.NoError(t, err, "NewTTSModel should not return an error for valid input")
 	assert.Equal(t, modelTypeTTS, v.category, "NewTTSModel should set category to modelTypeTTS")
 }

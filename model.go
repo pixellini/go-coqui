@@ -54,7 +54,7 @@ type ModelIdentifier struct {
 
 // NewModel creates a new custom Model Identifier.
 // This is useful for models that are not predefined in the Coqui TTS library.
-func NewModel(modelType Category, language Language, dataset Dataset, model BaseModel) (ModelIdentifier, error) {
+func NewModel(modelType Category, model BaseModel, dataset Dataset, language Language) (ModelIdentifier, error) {
 	if modelType == "" {
 		return ModelIdentifier{}, fmt.Errorf("model type cannot be empty")
 	}

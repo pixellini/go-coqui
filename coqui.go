@@ -76,40 +76,33 @@ func New(options ...Option) (*TTS, error) {
 }
 
 // NewWithModelXttsV2 creates a new TTS instance configured for the XTTS v2 model.
-// Requires a speaker sample file path for voice cloning.
-func NewWithModelXttsV2(samplePath string, options ...Option) (*TTS, error) {
+func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 	opts := append([]Option{
 		WithModelId(TTSModelXTTSv2),
-		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
 
 // NewWithModelXttsV1 creates a new TTS instance configured for the XTTS v1.1 model.
-// Requires a speaker sample file path for voice cloning.
-func NewWithModelXttsV1(samplePath string, options ...Option) (*TTS, error) {
+func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 	opts := append([]Option{
 		WithModelId(TTSModelXTTSv1),
-		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
 
 // NewWithModelYourTTS creates a new TTS instance configured for the YourTTS model.
-// Requires a speaker sample file path for voice cloning.
-func NewWithModelYourTTS(samplePath string, options ...Option) (*TTS, error) {
+func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 	opts := append([]Option{
 		WithModelId(TTSModelYourTTS),
-		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
 
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
-func NewWithModelBark(samplePath string, options ...Option) (*TTS, error) {
+func NewWithModelBark(options ...Option) (*TTS, error) {
 	opts := append([]Option{
 		WithModelId(TTSModelBark),
-		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }

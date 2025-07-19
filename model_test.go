@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewModel_Valid(t *testing.T) {
-	m, err := NewModel(modelTypeTTS, English, DatasetLJSpeech, BaseModelTacotron2DDC)
+	m, err := NewModel(modelTypeTTS, BaseModelTacotron2DDC, DatasetLJSpeech, English)
 	require.NoError(t, err)
 	assert.Equal(t, modelTypeTTS, m.category)
 	assert.Equal(t, English, m.currentLanguage)
@@ -18,16 +18,16 @@ func TestNewModel_Valid(t *testing.T) {
 }
 
 func TestNewModel_Invalid(t *testing.T) {
-	_, err := NewModel("", English, DatasetLJSpeech, BaseModelTacotron2DDC)
+	_, err := NewModel("", BaseModelTacotron2DDC, DatasetLJSpeech, English)
 	assert.Error(t, err)
 
-	_, err = NewModel(modelTypeTTS, "", DatasetLJSpeech, BaseModelTacotron2DDC)
+	_, err = NewModel(modelTypeTTS, BaseModelTacotron2DDC, DatasetLJSpeech, "")
 	assert.Error(t, err)
 
-	_, err = NewModel(modelTypeTTS, English, "", BaseModelTacotron2DDC)
+	_, err = NewModel(modelTypeTTS, BaseModelTacotron2DDC, "", English)
 	assert.Error(t, err)
 
-	_, err = NewModel(modelTypeTTS, English, DatasetLJSpeech, "")
+	_, err = NewModel(modelTypeTTS, "", DatasetLJSpeech, English)
 	assert.Error(t, err)
 }
 

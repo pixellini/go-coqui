@@ -21,32 +21,28 @@ func TestNew_Default(t *testing.T) {
 }
 
 func TestNewWithModelXttsV2(t *testing.T) {
-	samplePath := "sample.wav"
-	tts, err := NewWithModelXttsV2(samplePath)
+	tts, err := NewWithModelXttsV2()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, tts, "TTS instance should not be nil")
 	assert.Equal(t, TTSModelXTTSv2, tts.CurrentModel(), "Current model should be XTTSv2")
 }
 
 func TestNewWithModelXttsV1(t *testing.T) {
-	samplePath := "sample.wav"
-	tts, err := NewWithModelXttsV1(samplePath)
+	tts, err := NewWithModelXttsV1()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, tts, "TTS instance should not be nil")
 	assert.Equal(t, TTSModelXTTSv1, tts.CurrentModel(), "Current model should be XTTSv1")
 }
 
 func TestNewWithModelYourTTS(t *testing.T) {
-	samplePath := "sample.wav"
-	tts, err := NewWithModelYourTTS(samplePath)
+	tts, err := NewWithModelYourTTS()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, tts, "TTS instance should not be nil")
 	assert.Equal(t, TTSModelYourTTS, tts.CurrentModel(), "Current model should be YourTTS")
 }
 
 func TestNewWithModelBark(t *testing.T) {
-	samplePath := "sample.wav"
-	tts, err := NewWithModelBark(samplePath)
+	tts, err := NewWithModelBark()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, tts, "TTS instance should not be nil")
 	assert.Equal(t, TTSModelBark, tts.CurrentModel(), "Current model should be Bark")
