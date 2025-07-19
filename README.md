@@ -3,7 +3,7 @@
 A Go library for seamlessly converting text files into high-quality audio using Coqui TTS. Easily integrate text-to-speech capabilities into your Go projects with simple, efficient APIs.
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/pixellini/go-coqui/main/assets/logo.png" alt="Logo">
+  <img src="https://raw.githubusercontent.com/pixellini/pixellini/main/assets/go-coqui.png" alt="Logo">
 </div>
 
 
