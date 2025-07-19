@@ -22,6 +22,14 @@ func WithModelId(modelId ModelIdentifier) Option {
 	})
 }
 
+// WithCustomModel sets a custom TTS model by providing the model path.
+// This is useful for models that are not predefined in the Coqui TTS library.
+func WithModelPath(path string) Option {
+	return optionFunc(func(t *TTS) error {
+		return t.SetCurrentModelPath(path)
+	})
+}
+
 // WithModelLanguage sets the target language for TTS synthesis.
 // Note: Language support varies by model.
 func WithModelLanguage(language Language) Option {

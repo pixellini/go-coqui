@@ -470,7 +470,7 @@ var TTSModels = ModelList[TTSModel]{
 func NewTTSModel(language Language, dataset Dataset, model BaseModel) (ModelIdentifier, error) {
 	// TODO: Need a method to point to a custom model via a path.
 	// IDEA: It would be cool to add a method that splits the Model Name from a string like "tts_models/en/ek1/tacotron2" into its components.
-	return NewModal(modelTypeTTS, language, dataset, model)
+	return NewModel(modelTypeTTS, language, dataset, model)
 }
 
 // GetTTSModels returns a list of all predefined TTS models.

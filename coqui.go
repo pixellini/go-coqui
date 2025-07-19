@@ -14,26 +14,29 @@ import (
 // Configured with a specific model, language, and device settings.
 // TTS holds the configuration for TTS synthesis.
 type TTS struct {
-	// Model specifies the TTS model to use for synthesis.
+	// model specifies the TTS model to use for synthesis.
 	// This can be a specific model like ModelXTTSv2 or a custom Model.
 	model TTSModel
-	// Vocoder specifies the vocoder model to use for audio synthesis.
+	// modelPath is the path to a custom TTS model.
+	// If set, this overrides the default model and uses the specified path.
+	modelPath string
+	// vocoder specifies the vocoder model to use for audio synthesis.
 	// If not set, the default vocoder for the model will be used.
 	// This is useful for advanced configurations where a specific vocoder is desired.
 	vocoder Vocoder
-	// SpeakerSample is the path to the speaker sample file (XTTS only).
+	// speakerSample is the path to the speaker sample file (XTTS only).
 	// Should be a clear audio sample of the desired voice (1-3 minutes recommended).
 	speakerSample string
-	// SpeakerIdx is the speaker index identifier (VITS only).
+	// speakerIdx is the speaker index identifier (VITS only).
 	// Use speaker IDs like "p225", "p287", ett. from the VCTK dataset.
 	speakerIdx string
-	// OutputDir is the output directory for generated audio files.
+	// outputDir is the output directory for generated audio files.
 	// If empty, files are saved to the current working directory.
 	outputDir string
-	// Device specifies the compute device (auto/cpu/cuda/mps).
+	// device specifies the compute device (auto/cpu/cuda/mps).
 	// Use "auto" for automatic detection, "cuda" for GPU acceleration if available.
 	device Device
-	// MaxRetries is the maximum number of synthesis attempts on failure.
+	// maxRetries is the maximum number of synthesis attempts on failure.
 	// Recommended range is 1-5; higher values increase reliability but slow down failure recovery.
 	maxRetries int
 }
@@ -177,69 +180,10 @@ func (t TTS) synthesize(ctx context.Context, text, output string) ([]byte, error
 	return nil, lastErr
 }
 
-// toArgs converts the TTS configuration to command-line arguments.
-// for the underlying Coqui TTS Python process.
-// TODO: There are other arguments that can be added based on the model type.
-// There's also a lot of room for improvement here, but for now,
-// this function generates the basic arguments needed for synthesis.
-func (t TTS) toArgs() []string {
-	// Resolve "auto" device to actual device.
-	device := t.device
-	if device == DeviceAuto {
-		device = detectDevice()
-	}
-
-	args := []string{
-		argModelName, t.Name(),
-		argDevice, device.String(),
-	}
-
-	// Explicitly set CUDA usage based on device.
-	if device == DeviceCUDA {
-		args = append(args, argUseCuda, "true")
-	}
-
-	// TODO: Handle vocoder if specified.
-	if t.vocoder.IsValid() {
-		args = append(args, argVocoderName, t.VocoderName())
-	}
-
-	// TODO: Handle Voice Conversion models.
-
-	lang := t.model.currentLanguage.String()
-	// We don't know the model type at this point, and we won't know if the model supports voice cloning until we run the command.
-	// So we need to handle the speaker sample and index based on what the user has set.
-	if t.model.isCustom {
-		if t.speakerSample != "" {
-			args = append(args, argSpeakerWav, t.speakerSample)
-			args = append(args, argLanguageIdx, lang)
-		} else {
-			args = append(args, argSpeakerIdx, t.speakerIdx)
-		}
-	} else {
-		// Handle voice cloning models (XTTS variants, YourTTS).
-		if t.model.SupportsVoiceCloning() {
-			if t.speakerSample != "" {
-				args = append(args, argSpeakerWav, t.speakerSample)
-			}
-
-			args = append(args, argLanguageIdx, lang)
-		}
-
-		if t.speakerIdx != "" {
-			args = append(args, argSpeakerIdx, t.speakerIdx)
-		}
-	}
-
-	fmt.Printf("\nArgs: %v\n", args)
-
-	return args
-}
-
 // run executes the Coqui TTS command with the specified text and output path.
 // This is an internal method that handles the actual subprocess execution.
 func (t TTS) run(ctx context.Context, text, output string) ([]byte, error) {
-	args := t.toArgs()
+	args := toArgs(t)
 	args = append(args,
 		argText, text,
 		argOutPath, output,
@@ -327,6 +271,22 @@ func (t *TTS) SetCurrentModelIdentifier(m ModelIdentifier) error {
 	}
 	t.model = m
 	t.model.currentLanguage = m.defaultLanguage
+	t.modelPath = ""
+	return nil
+}
+
+func (t *TTS) SetCurrentModelPath(p string) error {
+	if p == "" {
+		return fmt.Errorf("model path cannot be empty")
+	}
+
+	// Check if the model path exists
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		return fmt.Errorf("model path does not exist: %s", p)
+	}
+
+	t.modelPath = p
+	t.model.isCustom = true // Mark as custom model
 	return nil
 }
 

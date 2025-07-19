@@ -1,5 +1,7 @@
 package coqui
 
+import "fmt"
+
 // TODO: I'll remove some of these if I don't need them later.
 // For now, I just want an easy reference to the CLI arguments.
 const (
@@ -68,3 +70,67 @@ const (
 	// [VOICE_DIR] Voice dir for tortoise model
 	argVoiceDir = "--voice_dir"
 )
+
+// toArgs converts the TTS configuration to command-line arguments.
+// for the underlying Coqui TTS Python process.
+// TODO: There are other arguments that can be added based on the model type.
+// There's also a lot of room for improvement here, but for now,
+// this function generates the basic arguments needed for synthesis.
+func toArgs(t TTS) []string {
+	// Resolve "auto" device to actual device.
+	device := t.device
+	if device == DeviceAuto {
+		device = detectDevice()
+	}
+
+	args := []string{
+		argDevice, device.String(),
+	}
+
+	if t.modelPath != "" {
+		args = append(args, argModelPath, t.modelPath)
+	} else {
+		args = append(args, argModelName, t.Name())
+	}
+
+	// Explicitly set CUDA usage based on device.
+	if device == DeviceCUDA {
+		args = append(args, argUseCuda, "true")
+	}
+
+	// Handle vocoder if set.
+	if t.vocoder.IsValid() {
+		args = append(args, argVocoderName, t.VocoderName())
+	}
+
+	// TODO: Handle Voice Conversion models.
+
+	lang := t.model.currentLanguage.String()
+	// We don't know the model type at this point, and we won't know if the model supports voice cloning until we run the command.
+	// So we need to handle the speaker sample and index based on what the user has set.
+	if t.model.isCustom {
+		if t.speakerSample != "" {
+			args = append(args, argSpeakerWav, t.speakerSample)
+			args = append(args, argLanguageIdx, lang)
+		} else {
+			args = append(args, argSpeakerIdx, t.speakerIdx)
+		}
+	} else {
+		// Handle voice cloning models (XTTS variants, YourTTS).
+		if t.model.SupportsVoiceCloning() {
+			if t.speakerSample != "" {
+				args = append(args, argSpeakerWav, t.speakerSample)
+			}
+
+			args = append(args, argLanguageIdx, lang)
+		}
+
+		if t.speakerIdx != "" {
+			args = append(args, argSpeakerIdx, t.speakerIdx)
+		}
+	}
+
+	fmt.Printf("\nArgs: %v\n", args)
+
+	return args
+}

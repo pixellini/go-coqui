@@ -30,7 +30,7 @@ var VoiceConversionModelList = ModelList[VoiceConversion]{
 
 // NewVoiceConversion creates a new VoiceConversion model with the specified parameters.
 func NewVoiceConversion(language Language, dataset Dataset, model BaseModel) (VoiceConversion, error) {
-	return NewModal(modelTypeVoiceConversion, language, dataset, model)
+	return NewModel(modelTypeVoiceConversion, language, dataset, model)
 }
 
 // GetVoiceConversionModels returns a list of all predefined voice conversion models.

@@ -204,7 +204,7 @@ var Vocoders = ModelList[Vocoder]{
 
 // NewVocoder creates a new vocoder model identifier.
 func NewVocoder(language Language, dataset Dataset, model BaseModel) (Vocoder, error) {
-	return NewModal(modelTypeVocoder, language, dataset, model)
+	return NewModel(modelTypeVocoder, language, dataset, model)
 }
 
 // GetVocoders returns a list of all predefined vocoder models.
