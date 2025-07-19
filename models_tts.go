@@ -45,6 +45,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelXTTSv2,
 		defaultLanguage:      English,
+		currentLanguage:      English,
 		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
@@ -54,6 +55,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelXTTSv1,
 		defaultLanguage:      English,
+		currentLanguage:      English,
 		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
@@ -63,6 +65,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelYourTTS,
 		defaultLanguage:      English,
+		currentLanguage:      English,
 		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
@@ -72,6 +75,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelBark,
 		defaultLanguage:      English,
+		currentLanguage:      English,
 		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
@@ -82,6 +86,7 @@ var (
 		dataset:            DatasetCV,
 		model:              BaseModelVITS,
 		defaultLanguage:    English, // Fallback to English if available
+		currentLanguage:    English, // Fallback to English if available
 		supportedLanguages: []Language{Bulgarian, Czech, Danish, Estonian, Irish, Greek, Croatian, Lithuanian, Latvian, Maltese, Portuguese, Romanian, Slovak, Slovenian, Swedish},
 	}
 
@@ -91,6 +96,7 @@ var (
 		dataset:            DatasetEK1,
 		model:              BaseModelTacotron2,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -100,6 +106,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelTacotron2DDC,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -108,6 +115,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelTacotron2DDCPh,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -116,6 +124,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelGlowTTS,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -124,6 +133,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelSpeedySpeech,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -132,6 +142,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelTacotron2DCA,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -140,6 +151,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelVITS,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -148,6 +160,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelVITSNeon,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -156,6 +169,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelFastPitch,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -164,6 +178,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelOverflow,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -172,6 +187,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseModelNeuralHMM,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -181,6 +197,7 @@ var (
 		dataset:            DatasetVCTK,
 		model:              BaseModelVITS,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -189,6 +206,7 @@ var (
 		dataset:            DatasetVCTK,
 		model:              BaseModelFastPitch,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -198,6 +216,7 @@ var (
 		dataset:            DatasetSam,
 		model:              BaseModelTacotron2DDC,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -207,6 +226,7 @@ var (
 		dataset:            DatasetBlizzard2013,
 		model:              BaseModelCapacitronT2C50,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -215,6 +235,7 @@ var (
 		dataset:            DatasetBlizzard2013,
 		model:              BaseModelCapacitronT2C150v2,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -224,6 +245,7 @@ var (
 		dataset:            DatasetMultiDataset,
 		model:              BaseModelTortoise,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -233,6 +255,7 @@ var (
 		dataset:            DatasetJenny,
 		model:              BaseModelJenny,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -242,6 +265,7 @@ var (
 		dataset:            DatasetMai,
 		model:              BaseModelTacotron2DDC,
 		defaultLanguage:    Spanish,
+		currentLanguage:    Spanish,
 		supportedLanguages: []Language{Spanish, French, Dutch},
 	}
 
@@ -250,6 +274,7 @@ var (
 		dataset:            DatasetMai,
 		model:              BaseModelGlowTTS,
 		defaultLanguage:    Ukrainian,
+		currentLanguage:    Ukrainian,
 		supportedLanguages: []Language{Ukrainian},
 	}
 
@@ -258,6 +283,7 @@ var (
 		dataset:            DatasetMai,
 		model:              BaseModelVITS,
 		defaultLanguage:    Ukrainian,
+		currentLanguage:    Ukrainian,
 		supportedLanguages: []Language{Ukrainian},
 	}
 
@@ -267,6 +293,7 @@ var (
 		dataset:            DatasetCSS10,
 		model:              BaseModelVITS,
 		defaultLanguage:    Spanish,
+		currentLanguage:    Spanish,
 		supportedLanguages: []Language{Spanish, French, German, Dutch, Hungarian, Finnish},
 	}
 
@@ -275,6 +302,7 @@ var (
 		dataset:            DatasetCSS10,
 		model:              BaseModelVITSNeon,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -284,6 +312,7 @@ var (
 		dataset:            DatasetBaker,
 		model:              BaseModelTacotron2DDCGST,
 		defaultLanguage:    Chinese,
+		currentLanguage:    Chinese,
 		supportedLanguages: []Language{Chinese},
 	}
 
@@ -293,6 +322,7 @@ var (
 		dataset:            DatasetThorsten,
 		model:              BaseModelTacotron2DCA,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -301,6 +331,7 @@ var (
 		dataset:            DatasetThorsten,
 		model:              BaseModelVITS,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -309,6 +340,7 @@ var (
 		dataset:            DatasetThorsten,
 		model:              BaseModelTacotron2DDC,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -318,6 +350,7 @@ var (
 		dataset:            DatasetKokoro,
 		model:              BaseModelTacotron2DDC,
 		defaultLanguage:    Japanese,
+		currentLanguage:    Japanese,
 		supportedLanguages: []Language{Japanese},
 	}
 
@@ -327,6 +360,7 @@ var (
 		dataset:            DatasetCommonVoice,
 		model:              BaseModelGlowTTS,
 		defaultLanguage:    Turkish,
+		currentLanguage:    Turkish,
 		supportedLanguages: []Language{Turkish, Belarusian},
 	}
 
@@ -336,6 +370,7 @@ var (
 		dataset:            DatasetMaiFemale,
 		model:              BaseModelGlowTTS,
 		defaultLanguage:    Italian,
+		currentLanguage:    Italian,
 		supportedLanguages: []Language{Italian},
 	}
 
@@ -344,6 +379,7 @@ var (
 		dataset:            DatasetMaiFemale,
 		model:              BaseModelVITS,
 		defaultLanguage:    Italian,
+		currentLanguage:    Italian,
 		supportedLanguages: []Language{Italian, Polish},
 	}
 
@@ -353,6 +389,7 @@ var (
 		dataset:            DatasetMaiMale,
 		model:              BaseModelGlowTTS,
 		defaultLanguage:    Italian,
+		currentLanguage:    Italian,
 		supportedLanguages: []Language{Italian},
 	}
 
@@ -361,6 +398,7 @@ var (
 		dataset:            DatasetMaiMale,
 		model:              BaseModelVITS,
 		defaultLanguage:    Italian,
+		currentLanguage:    Italian,
 		supportedLanguages: []Language{Italian},
 	}
 
@@ -370,6 +408,7 @@ var (
 		dataset:            DatasetOpenBible,
 		model:              BaseModelVITS,
 		defaultLanguage:    Hausa,
+		currentLanguage:    Hausa,
 		supportedLanguages: []Language{Ewe, Hausa, Lin, TwiAkuapem, TwiAsante, Yoruba},
 	}
 
@@ -379,6 +418,7 @@ var (
 		dataset:            DatasetCustom,
 		model:              BaseModelVITS,
 		defaultLanguage:    Catalan,
+		currentLanguage:    Catalan,
 		supportedLanguages: []Language{Catalan, Bengali},
 	}
 
@@ -387,6 +427,7 @@ var (
 		dataset:            DatasetCustom,
 		model:              BaseModelGlowTTS,
 		defaultLanguage:    Persian,
+		currentLanguage:    Persian,
 		supportedLanguages: []Language{Persian},
 	}
 
@@ -395,6 +436,7 @@ var (
 		dataset:            DatasetCustom,
 		model:              BaseModelVITSMale,
 		defaultLanguage:    Bengali,
+		currentLanguage:    Bengali,
 		supportedLanguages: []Language{Bengali},
 	}
 
@@ -403,6 +445,7 @@ var (
 		dataset:            DatasetCustom,
 		model:              BaseModelVITSFemale,
 		defaultLanguage:    Bengali,
+		currentLanguage:    Bengali,
 		supportedLanguages: []Language{Bengali},
 	}
 )

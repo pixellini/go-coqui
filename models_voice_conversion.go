@@ -17,12 +17,13 @@ var (
 		dataset:            DatasetVCTK,
 		model:              BaseVoiceConversionFreevc24,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: supportedLanguages,
 	}
 )
 
-// VoiceConversionModelList contains all predefined voice conversion model identifiers.
-var VoiceConversionModelList = ModelList[VoiceConversion]{
+// VoiceConversions contains all predefined voice conversion model identifiers.
+var VoiceConversions = ModelList[VoiceConversion]{
 	models: []VoiceConversion{
 		VoiceConversionVCTKFreeVC24,
 	},
@@ -35,5 +36,5 @@ func NewVoiceConversion(language Language, dataset Dataset, model BaseModel) (Vo
 
 // GetVoiceConversionModels returns a list of all predefined voice conversion models.
 func GetVoiceConversionModels() []VoiceConversion {
-	return slices.Clone(VoiceConversionModelList.models)
+	return slices.Clone(VoiceConversions.models)
 }

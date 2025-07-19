@@ -1,7 +1,5 @@
 package coqui
 
-import "fmt"
-
 // TODO: I'll remove some of these if I don't need them later.
 // For now, I just want an easy reference to the CLI arguments.
 const (
@@ -129,8 +127,6 @@ func toArgs(t TTS) []string {
 			args = append(args, argSpeakerIdx, t.speakerIdx)
 		}
 	}
-
-	fmt.Printf("\nArgs: %v\n", args)
 
 	return args
 }

@@ -65,7 +65,12 @@ func New(options ...Option) (*TTS, error) {
 		}
 	}
 
-	fmt.Printf("\nUsing model: %s", tts.Name())
+	if tts.model.defaultLanguage != "" && tts.model.currentLanguage == "" {
+		tts.model.currentLanguage = defaultLanguage
+	}
+	if tts.vocoder.defaultLanguage != "" && tts.vocoder.currentLanguage == "" {
+		tts.vocoder.currentLanguage = defaultLanguage
+	}
 
 	return tts, nil
 }
@@ -101,9 +106,10 @@ func NewWithModelYourTTS(samplePath string, options ...Option) (*TTS, error) {
 }
 
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
-func NewWithModelBark(options ...Option) (*TTS, error) {
+func NewWithModelBark(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
 		WithModelId(TTSModelBark),
+		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
 }
@@ -118,28 +124,28 @@ func (t *TTS) Configure(options ...Option) {
 
 // Synthesize converts text to speech and saves it to the specified output file.
 // This is a convenience method that uses context.Background().
-func (t TTS) Synthesize(text, output string) ([]byte, error) {
-	return t.SynthesizeContext(context.Background(), text, output)
+func (t TTS) Synthesize(text, outputPath string) ([]byte, error) {
+	return t.SynthesizeContext(context.Background(), text, outputPath)
 }
 
 // SynthesizeContext converts text to speech with context support for cancellation.
 // Supports automatic retries on failure and returns the command output on success.
 // Returns an error if the output file already exists.
-func (t TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byte, error) {
+func (t TTS) SynthesizeContext(ctx context.Context, text, outputPath string) ([]byte, error) {
 	if text == "" {
 		return nil, errors.New("text cannot be empty")
 	}
 
-	return t.synthesize(ctx, text, output)
+	return t.synthesize(ctx, text, outputPath)
 }
 
 // SynthesizeFromFile converts text from a file to speech and saves it to the specified output file.
-func (t TTS) SynthesizeFromFile(filePath, output string) ([]byte, error) {
-	return t.SynthesizeFromFileContext(context.Background(), filePath, output)
+func (t TTS) SynthesizeFromFile(filePath, outputPath string) ([]byte, error) {
+	return t.SynthesizeFromFileContext(context.Background(), filePath, outputPath)
 }
 
 // SynthesizeFromFileContext converts text from a file to speech with context support.
-func (t TTS) SynthesizeFromFileContext(ctx context.Context, filePath, output string) ([]byte, error) {
+func (t TTS) SynthesizeFromFileContext(ctx context.Context, filePath, outputPath string) ([]byte, error) {
 	if filePath == "" {
 		return nil, errors.New("file path cannot be empty")
 	}
@@ -148,17 +154,17 @@ func (t TTS) SynthesizeFromFileContext(ctx context.Context, filePath, output str
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file %s: %w", filePath, err)
 	}
-	return t.synthesize(ctx, string(content), output)
+	return t.synthesize(ctx, string(content), outputPath)
 }
 
 // synthesize runs the TTS command to convert text to speech.
-func (t TTS) synthesize(ctx context.Context, text, output string) ([]byte, error) {
+func (t TTS) synthesize(ctx context.Context, text, outputPath string) ([]byte, error) {
 	// Create the dist directory if it doesn't exist
 	if err := os.MkdirAll(t.outputDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create dist directory: %w", err)
 	}
 
-	outputPath := t.outputDir + output
+	outputPath = t.outputDir + outputPath
 
 	_, err := os.Stat(outputPath)
 	if err == nil {
@@ -182,14 +188,14 @@ func (t TTS) synthesize(ctx context.Context, text, output string) ([]byte, error
 
 // run executes the Coqui TTS command with the specified text and output path.
 // This is an internal method that handles the actual subprocess execution.
-func (t TTS) run(ctx context.Context, text, output string) ([]byte, error) {
+func (t TTS) run(ctx context.Context, text, outputPath string) ([]byte, error) {
 	args := toArgs(t)
 	args = append(args,
 		argText, text,
-		argOutPath, output,
+		argOutPath, outputPath,
 	)
 
-	fmt.Printf("\nProcessing text: %q", text)
+	fmt.Printf("\nProcessing text: %q\n", text)
 
 	cmd := exec.CommandContext(ctx, "tts", args...)
 
@@ -221,7 +227,7 @@ func (t TTS) Name() string {
 // VocoderName returns the full Coqui TTS vocoder name to use.
 // Format: vocoder_models/{language}/{dataset}/{model}
 func (t TTS) VocoderName() string {
-	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.model, t.vocoder.defaultLanguage, t.vocoder.dataset, t.vocoder.model)
+	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.category, t.vocoder.defaultLanguage, t.vocoder.dataset, t.vocoder.model)
 }
 
 // CurrentModel returns the Model being used for synthesis.
@@ -275,6 +281,7 @@ func (t *TTS) SetCurrentModelIdentifier(m ModelIdentifier) error {
 	return nil
 }
 
+// SetCurrentModelPath sets the path to a custom TTS model.
 func (t *TTS) SetCurrentModelPath(p string) error {
 	if p == "" {
 		return fmt.Errorf("model path cannot be empty")
@@ -328,7 +335,6 @@ func (t *TTS) SetCurrentSpeaker(s string) error {
 	if s == "" {
 		return fmt.Errorf("speaker cannot be empty")
 	}
-	fmt.Printf("Speak path: %s\n", filepath.Ext(s))
 	// speaker has an extension (e.g. ".wav", ".mp3").
 	if filepath.Ext(s) != "" && t.model.SupportsVoiceCloning() {
 		t.speakerSample = s

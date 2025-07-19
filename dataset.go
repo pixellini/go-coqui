@@ -91,8 +91,8 @@ func (d Dataset) String() string {
 	return string(d)
 }
 
-// IsValid checks if the dataset is one of the predefined datasets.
-func (d Dataset) IsValid() bool {
+// isPreset checks if the dataset is one of the predefined datasets.
+func (d Dataset) isPreset() bool {
 	return slices.Contains(datasets, d)
 }
 

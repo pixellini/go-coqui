@@ -68,6 +68,16 @@ func NewModel(modelType Category, language Language, dataset Dataset, model Base
 		return ModelIdentifier{}, fmt.Errorf("model architecture cannot be empty")
 	}
 
+	if !slices.Contains(modelTypes, modelType) {
+		return ModelIdentifier{}, fmt.Errorf("unsupported model type: %s", modelType)
+	}
+	if !language.IsSupported() {
+		return ModelIdentifier{}, fmt.Errorf("unsupported language: %s", language)
+	}
+	if !dataset.isPreset() {
+		return ModelIdentifier{}, fmt.Errorf("unsupported dataset: %s", dataset)
+	}
+
 	var supportedLanguages = []Language{language}
 	if language == Universal || language == Multilingual {
 		// If the language is Universal or Multilingual, we assume it supports all languages.

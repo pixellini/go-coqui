@@ -1,7 +1,6 @@
 package coqui
 
 import (
-	"fmt"
 	"os/exec"
 	"runtime"
 	"slices"
@@ -72,16 +71,13 @@ func isCudaAvailable() bool {
 // I'll make that decision later.
 func detectDevice() Device {
 	if isCudaAvailable() {
-		fmt.Println("CUDA available, using CUDA device.")
 		return DeviceCUDA
 	}
 
 	if isRuntimeGOOS() && isRuntimeGOARCH() {
-		fmt.Println("ARM64 model detected, using MPS.")
 		return DeviceMPS
 	}
 
 	// Default to "cpu" if no other device is available.
-	fmt.Println("No GPU detected or CUDA not available, using CPU device.")
 	return DeviceCPU
 }

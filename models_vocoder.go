@@ -25,6 +25,7 @@ var (
 		dataset:            DatasetLibriTTS,
 		model:              BaseVocoderWavegrad,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: supportedLanguages, // Universal vocoder.
 	}
 
@@ -33,6 +34,7 @@ var (
 		dataset:            DatasetEK1,
 		model:              BaseVocoderWavegrad,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -41,6 +43,7 @@ var (
 		dataset:            DatasetThorsten,
 		model:              BaseVocoderWavegrad,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -50,6 +53,7 @@ var (
 		dataset:            DatasetLibriTTS,
 		model:              BaseVocoderFullbandMelgan,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: supportedLanguages, // Universal vocoder.
 	}
 
@@ -58,6 +62,7 @@ var (
 		dataset:            DatasetThorsten,
 		model:              BaseVocoderFullbandMelgan,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -67,6 +72,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseVocoderMultibandMelgan,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -75,6 +81,7 @@ var (
 		dataset:            DatasetMai,
 		model:              BaseVocoderMultibandMelgan,
 		defaultLanguage:    Ukrainian,
+		currentLanguage:    Ukrainian,
 		supportedLanguages: []Language{Ukrainian},
 	}
 
@@ -84,6 +91,7 @@ var (
 		dataset:            DatasetThorsten,
 		model:              BaseVocoderHifiganV1,
 		defaultLanguage:    German,
+		currentLanguage:    German,
 		supportedLanguages: []Language{German},
 	}
 
@@ -92,6 +100,7 @@ var (
 		dataset:            DatasetKokoro,
 		model:              BaseVocoderHifiganV1,
 		defaultLanguage:    Japanese,
+		currentLanguage:    Japanese,
 		supportedLanguages: []Language{Japanese},
 	}
 
@@ -101,6 +110,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseVocoderHifiganV2,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -109,6 +119,7 @@ var (
 		dataset:            DatasetBlizzard2013,
 		model:              BaseVocoderHifiganV2,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -117,6 +128,7 @@ var (
 		dataset:            DatasetVCTK,
 		model:              BaseVocoderHifiganV2,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -125,6 +137,7 @@ var (
 		dataset:            DatasetSam,
 		model:              BaseVocoderHifiganV2,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -134,6 +147,7 @@ var (
 		dataset:            DatasetCommonVoice,
 		model:              BaseVocoderHifigan,
 		defaultLanguage:    Turkish,
+		currentLanguage:    Turkish,
 		supportedLanguages: []Language{Turkish},
 	}
 
@@ -142,6 +156,7 @@ var (
 		dataset:            DatasetCommonVoice,
 		model:              BaseVocoderHifigan,
 		defaultLanguage:    Belarusian,
+		currentLanguage:    Belarusian,
 		supportedLanguages: []Language{Belarusian},
 	}
 
@@ -151,6 +166,7 @@ var (
 		dataset:            DatasetLJSpeech,
 		model:              BaseVocoderUnivnet,
 		defaultLanguage:    English,
+		currentLanguage:    English,
 		supportedLanguages: []Language{English},
 	}
 
@@ -160,6 +176,7 @@ var (
 		dataset:            DatasetMai,
 		model:              BaseVocoderParallelWavegan,
 		defaultLanguage:    Dutch,
+		currentLanguage:    Dutch,
 		supportedLanguages: []Language{Dutch},
 	}
 )
