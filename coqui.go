@@ -337,18 +337,18 @@ func (t TTS) toArgs() []string {
 	}
 
 	args := []string{
-		"--model_name", t.Name(),
-		"--device", device.String(),
+		argModelName, t.Name(),
+		argDevice, device.String(),
 	}
 
 	// Explicitly set CUDA usage based on device.
 	if device == DeviceCUDA {
-		args = append(args, "--use_cuda", "true")
+		args = append(args, argUseCuda, "true")
 	}
 
 	// TODO: Handle vocoder if specified.
 	if t.vocoder.IsValid() {
-		args = append(args, "--vocoder_name", t.VocoderName())
+		args = append(args, argVocoderName, t.VocoderName())
 	}
 
 	// TODO: Handle Voice Conversion models.
@@ -358,23 +358,23 @@ func (t TTS) toArgs() []string {
 	// So we need to handle the speaker sample and index based on what the user has set.
 	if t.model.isCustom {
 		if t.speakerSample != "" {
-			args = append(args, "--speaker_wav", t.speakerSample)
-			args = append(args, "--language_idx", lang)
+			args = append(args, argSpeakerWav, t.speakerSample)
+			args = append(args, argLanguageIdx, lang)
 		} else {
-			args = append(args, "--speaker_idx", t.speakerIdx)
+			args = append(args, argSpeakerIdx, t.speakerIdx)
 		}
 	} else {
 		// Handle voice cloning models (XTTS variants, YourTTS).
 		if t.model.SupportsVoiceCloning() {
 			if t.speakerSample != "" {
-				args = append(args, "--speaker_wav", t.speakerSample)
+				args = append(args, argSpeakerWav, t.speakerSample)
 			}
 
-			args = append(args, "--language_idx", lang)
+			args = append(args, argLanguageIdx, lang)
 		}
 
 		if t.speakerIdx != "" {
-			args = append(args, "--speaker_idx", t.speakerIdx)
+			args = append(args, argSpeakerIdx, t.speakerIdx)
 		}
 	}
 
@@ -388,8 +388,8 @@ func (t TTS) toArgs() []string {
 func (t TTS) run(ctx context.Context, text, output string) ([]byte, error) {
 	args := t.toArgs()
 	args = append(args,
-		"--text", text,
-		"--out_path", output,
+		argText, text,
+		argOutPath, output,
 	)
 
 	cmd := exec.CommandContext(ctx, "tts", args...)

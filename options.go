@@ -22,23 +22,18 @@ func WithModelId(modelId ModelIdentifier) Option {
 	})
 }
 
-// WithVocoder sets a vocoder model to use alongside the TTS model.
-// TODO: Implement proper handling for vocoder models.
-func WithVocoder(vModel Vocoder) Option {
-	return nil
-}
-
-// WithVoiceConversion sets a voice conversion model to use alongside the TTS model.
-// TODO: Implement proper handling for voice conversion models.
-func WithVoiceConversion(vcModel VoiceConversion) Option {
-	return nil
-}
-
 // WithModelLanguage sets the target language for TTS synthesis.
 // Note: Language support varies by model.
 func WithModelLanguage(language Language) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentModelLanguage(language)
+	})
+}
+
+// WithVocoder sets a vocoder model to use alongside the TTS model.
+func WithVocoder(vocoder Vocoder) Option {
+	return optionFunc(func(t *TTS) error {
+		return t.SetCurrentVocoder(vocoder)
 	})
 }
 
@@ -48,6 +43,12 @@ func WithVocoderLanguage(language Language) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentVocoderLanguage(language)
 	})
+}
+
+// WithVoiceConversion sets a voice conversion model to use alongside the TTS model.
+// TODO: Implement proper handling for voice conversion models.
+func WithVoiceConversion(vcModel VoiceConversion) Option {
+	return nil
 }
 
 // WithSpeaker sets the speaker for TTS synthesis.
