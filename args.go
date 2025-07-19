@@ -3,12 +3,12 @@ package coqui
 // TODO: I'll remove some of these if I don't need them later.
 // For now, I just want an easy reference to the CLI arguments.
 const (
+	// [TEXT] Text to generate speech.
+	argText = "--text"
 	// [MODEL_INFO_BY_IDX] model info using query format: <model_type>/<model_query_idx>
 	argModelInfoByIdx = "--model_info_by_idx"
 	// [MODEL_INFO_BY_NAME] model info using query format: <model_type>/<language>/<dataset>/<model_name>
 	argModelInfoByName = "--model_info_by_name"
-	// [TEXT] Text to generate speech.
-	argText = "--text"
 	// [MODEL_NAME] Name of one of the pre-trained TTS models in format <language>/<dataset>/<model_name>
 	argModelName = "--model_name"
 	// [VOCODER_NAME] Name of one of the pre-trained  vocoder models in format <language>/<dataset>/<model_name>
