@@ -79,9 +79,9 @@ const (
 	Multilingual Language = "multilingual" // Represents a model that supports multiple languages, often with regional variations.
 )
 
-// allSupportedLanguages contains the full list of languages supported by the available Coqui TTS models.
+// supportedLanguages contains the full list of languages supported by the available Coqui TTS models.
 // NOTE: Language support varies by model.
-var allSupportedLanguages = []Language{
+var supportedLanguages = []Language{
 	English,
 	Spanish,
 	French,
@@ -133,9 +133,9 @@ func (l Language) String() string {
 }
 
 // IsValid checks if the language is supported by Coqui TTS.
-// Returns true for all languages in the allSupportedLanguages list.
+// Returns true for all languages in the supportedLanguages list.
 func (l Language) IsSupported() bool {
-	return slices.Contains(allSupportedLanguages, l)
+	return slices.Contains(supportedLanguages, l)
 }
 
 // ParseLanguage parses a language string and returns the corresponding Language.
@@ -175,5 +175,5 @@ func MustParseLanguage(s string) Language {
 
 // GetSupportedLanguages returns a copy of all supported languages.
 func GetSupportedLanguages() []Language {
-	return slices.Clone(allSupportedLanguages)
+	return slices.Clone(supportedLanguages)
 }

@@ -25,7 +25,7 @@ var (
 		dataset:            DatasetLibriTTS,
 		model:              BaseVocoderWavegrad,
 		defaultLanguage:    English,
-		supportedLanguages: allSupportedLanguages, // Universal vocoder.
+		supportedLanguages: supportedLanguages, // Universal vocoder.
 	}
 
 	VocoderWavegradEK1 = Vocoder{
@@ -50,7 +50,7 @@ var (
 		dataset:            DatasetLibriTTS,
 		model:              BaseVocoderFullbandMelgan,
 		defaultLanguage:    English,
-		supportedLanguages: allSupportedLanguages, // Universal vocoder.
+		supportedLanguages: supportedLanguages, // Universal vocoder.
 	}
 
 	VocoderFullbandMelganThorsten = Vocoder{

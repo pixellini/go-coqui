@@ -17,7 +17,7 @@ var (
 		dataset:            DatasetVCTK,
 		model:              BaseVoiceConversionFreevc24,
 		defaultLanguage:    English,
-		supportedLanguages: allSupportedLanguages,
+		supportedLanguages: supportedLanguages,
 	}
 )
 

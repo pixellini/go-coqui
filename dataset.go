@@ -58,7 +58,7 @@ const (
 )
 
 // AllDatasets contains a list of all predefined dataset identifiers.
-var allDatasets = []Dataset{
+var datasets = []Dataset{
 	// Universal/Multilingual datasets.
 	DatasetLibriTTS,
 	DatasetMultiDataset,
@@ -93,10 +93,10 @@ func (d Dataset) String() string {
 
 // IsValid checks if the dataset is one of the predefined datasets.
 func (d Dataset) IsValid() bool {
-	return slices.Contains(allDatasets, d)
+	return slices.Contains(datasets, d)
 }
 
-// GetAllDatasets returns a list of all predefined dataset identifiers.
-func GetAllDatasets() []Dataset {
-	return slices.Clone(allDatasets)
+// GetDatasets returns a list of all predefined dataset identifiers.
+func GetDatasets() []Dataset {
+	return slices.Clone(datasets)
 }

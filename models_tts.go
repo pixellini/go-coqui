@@ -45,7 +45,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelXTTSv2,
 		defaultLanguage:      English,
-		supportedLanguages:   allSupportedLanguages,
+		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
 
@@ -54,7 +54,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelXTTSv1,
 		defaultLanguage:      English,
-		supportedLanguages:   allSupportedLanguages,
+		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
 
@@ -63,7 +63,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelYourTTS,
 		defaultLanguage:      English,
-		supportedLanguages:   allSupportedLanguages,
+		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
 
@@ -72,7 +72,7 @@ var (
 		dataset:              DatasetMultiDataset,
 		model:                BaseModelBark,
 		defaultLanguage:      English,
-		supportedLanguages:   allSupportedLanguages,
+		supportedLanguages:   supportedLanguages,
 		supportsVoiceCloning: true,
 	}
 

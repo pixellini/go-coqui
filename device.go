@@ -24,7 +24,7 @@ const (
 )
 
 // AllDevices contains all predefined device types supported by Coqui TTS.
-var allDevices = []Device{
+var devices = []Device{
 	DeviceAuto,
 	DeviceCPU,
 	DeviceCUDA,
@@ -38,7 +38,12 @@ func (d Device) String() string {
 
 // IsValid checks if the device type is supported.
 func (d Device) IsValid() bool {
-	return slices.Contains(allDevices, d)
+	return slices.Contains(devices, d)
+}
+
+// GetDevices returns a list of all predefined device types supported by Coqui TTS.
+func GetDevices() []Device {
+	return slices.Clone(devices)
 }
 
 // isRuntimeGOOS checks if the current operating system is macOS.
