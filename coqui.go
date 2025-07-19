@@ -20,10 +20,7 @@ type TTS struct {
 	// Vocoder specifies the vocoder model to use for audio synthesis.
 	// If not set, the default vocoder for the model will be used.
 	// This is useful for advanced configurations where a specific vocoder is desired.
-	vocoder VocoderModel
-	// Language specifies the target language for synthesis.
-	// See language.go for all supported language codes.
-	language Language
+	vocoder Vocoder
 	// SpeakerSample is the path to the speaker sample file (XTTS only).
 	// Should be a clear audio sample of the desired voice (1-3 minutes recommended).
 	speakerSample string
@@ -52,8 +49,7 @@ const (
 func New(options ...Option) (*TTS, error) {
 	// Build the config, apply the defaults
 	tts := &TTS{
-		model:      ModelXTTSv2,
-		language:   defaultLanguage,
+		model:      TTSModelXTTSv2,
 		outputDir:  defaultOutputDir,
 		device:     defaultDevice,
 		maxRetries: defaultMaxRetries,
@@ -66,7 +62,7 @@ func New(options ...Option) (*TTS, error) {
 		}
 	}
 
-	fmt.Printf("\nUsing model: %s", tts.ModelName())
+	fmt.Printf("\nUsing model: %s", tts.Name())
 
 	return tts, nil
 }
@@ -75,7 +71,7 @@ func New(options ...Option) (*TTS, error) {
 // Requires a speaker sample file path for voice cloning.
 func NewWithModelXttsV2(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModel(ModelXTTSv2),
+		WithModelId(TTSModelXTTSv2),
 		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
@@ -85,7 +81,7 @@ func NewWithModelXttsV2(samplePath string, options ...Option) (*TTS, error) {
 // Requires a speaker sample file path for voice cloning.
 func NewWithModelXttsV1(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModel(ModelXTTSv1),
+		WithModelId(TTSModelXTTSv1),
 		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
@@ -95,7 +91,7 @@ func NewWithModelXttsV1(samplePath string, options ...Option) (*TTS, error) {
 // Requires a speaker sample file path for voice cloning.
 func NewWithModelYourTTS(samplePath string, options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModel(ModelYourTTS),
+		WithModelId(TTSModelYourTTS),
 		WithSpeakerSample(samplePath),
 	}, options...)
 	return New(opts...)
@@ -104,7 +100,7 @@ func NewWithModelYourTTS(samplePath string, options ...Option) (*TTS, error) {
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
 func NewWithModelBark(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModel(ModelBark),
+		WithModelId(TTSModelBark),
 	}, options...)
 	return New(opts...)
 }
@@ -158,41 +154,41 @@ func (t TTS) SynthesizeContext(ctx context.Context, text, output string) ([]byte
 	return nil, lastErr
 }
 
-// ModelName returns the full Coqui TTS model name to use.
+// Name returns the full Coqui TTS model name to use.
 // Returns empty string if no model is configured.
-// Format: tts_models/{language}/{dataset}/{architecture}
+// Format: tts_models/{language}/{dataset}/{model}
 // For multilingual models, uses "multilingual" instead of specific language.
-func (t TTS) ModelName() string {
+func (t TTS) Name() string {
 	// Use "multilingual" for models that support all languages.
 	// NOTE: This is currently a workaround so I can test the functionality.
 	// But this will break if the model supports multiple languages but is not "multilingual" as defined in the model name.
 	// TODO: Fix this to properly handle "multilingual" vs multilingual models.
-	language := t.language.String()
+	language := t.model.currentLanguage.String()
 	if t.model.IsMultilingual() {
 		language = "multilingual"
 	}
-	return fmt.Sprintf("%s/%s/%s/%s", t.model.modelType, language, t.model.dataset, t.model.architecture)
+	return fmt.Sprintf("%s/%s/%s/%s", t.model.category, language, t.model.dataset, t.model.model)
 }
 
 // VocoderName returns the full Coqui TTS vocoder name to use.
-// Format: vocoder_models/{language}/{dataset}/{architecture}
+// Format: vocoder_models/{language}/{dataset}/{model}
 func (t TTS) VocoderName() string {
-	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.modelType, t.language, t.vocoder.dataset, t.vocoder.architecture)
+	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.model, t.vocoder.defaultLanguage, t.vocoder.dataset, t.vocoder.model)
 }
 
 // CurrentModel returns the Model being used for synthesis.
-func (t TTS) CurrentModel() TTSModel {
+func (t TTS) CurrentModel() Model {
 	return t.model
 }
 
 // CurrentVocoder returns the VocoderModel being used for synthesis.
-func (t TTS) CurrentVocoder() VocoderModel {
+func (t TTS) CurrentVocoder() Vocoder {
 	return t.vocoder
 }
 
-// CurrentLanguage returns the Language being used for synthesis.
-func (t TTS) CurrentLanguage() Language {
-	return t.language
+// CurrentModelLanguage returns the Language being used for synthesis.
+func (t TTS) CurrentModelLanguage() Language {
+	return t.model.currentLanguage
 }
 
 // CurrentSpeakerSample returns the path to the speaker sample file.
@@ -221,29 +217,45 @@ func (t TTS) CurrentMaxRetries() int {
 }
 
 // SetCurrentModel sets the TTS model to use for synthesis.
-func (t *TTS) SetCurrentModel(m TTSModel) error {
-	if !m.IsValid() {
-		return fmt.Errorf("invalid TTS model specified: %s", m.String())
+func (t *TTS) SetCurrentModelIdentifier(m ModelIdentifier) error {
+	if err := m.Validate(); err != nil {
+		return fmt.Errorf("invalid TTS model specified: %s", err)
 	}
 	t.model = m
+	t.model.currentLanguage = m.defaultLanguage
 	return nil
 }
 
 // SetCurrentVocoder sets the vocoder model to use for audio synthesis.
-func (t *TTS) SetCurrentVocoder(v VocoderModel) error {
-	if !v.IsValid() {
-		return fmt.Errorf("invalid vocoder model specified: %s", v.String())
+func (t *TTS) SetCurrentVocoder(v Vocoder) error {
+	if err := v.Validate(); err != nil {
+		return fmt.Errorf("invalid Vocoder specified: %s", err)
 	}
 	t.vocoder = v
 	return nil
 }
 
-// SetCurrentLanguage sets the target language for synthesis.
-func (t *TTS) SetCurrentLanguage(l Language) error {
+// SetCurrentModelLanguage sets the target language for synthesis.
+func (t *TTS) SetCurrentModelLanguage(l Language) error {
 	if !l.IsSupported() {
 		return fmt.Errorf("invalid language specified: %s", l.String())
 	}
-	t.language = l
+	if !t.model.SupportsLanguage(l) {
+		return fmt.Errorf("model %s does not support language %s", t.model.Name(), l.String())
+	}
+	t.model.currentLanguage = l
+	return nil
+}
+
+// SetCurrentVocoderLanguage sets the target language for synthesis.
+func (t *TTS) SetCurrentVocoderLanguage(l Language) error {
+	if !l.IsSupported() {
+		return fmt.Errorf("invalid language specified: %s", l.String())
+	}
+	if !t.vocoder.SupportsLanguage(l) {
+		return fmt.Errorf("vocoder %s does not support language %s", t.vocoder.Name(), l.String())
+	}
+	t.vocoder.currentLanguage = l
 	return nil
 }
 
@@ -252,6 +264,7 @@ func (t *TTS) SetCurrentSpeaker(s string) error {
 	if s == "" {
 		return fmt.Errorf("speaker cannot be empty")
 	}
+	fmt.Printf("Speak path: %s\n", filepath.Ext(s))
 	// speaker has an extension (e.g. ".wav", ".mp3").
 	if filepath.Ext(s) != "" && t.model.SupportsVoiceCloning() {
 		t.speakerSample = s
@@ -324,7 +337,7 @@ func (t TTS) toArgs() []string {
 	}
 
 	args := []string{
-		"--model_name", t.ModelName(),
+		"--model_name", t.Name(),
 		"--device", device.String(),
 	}
 
@@ -334,26 +347,38 @@ func (t TTS) toArgs() []string {
 	}
 
 	// TODO: Handle vocoder if specified.
+	if t.vocoder.IsValid() {
+		args = append(args, "--vocoder_name", t.VocoderName())
+	}
 
 	// TODO: Handle Voice Conversion models.
 
-	// Handle voice cloning models (XTTS variants, YourTTS).
-	if t.model.SupportsVoiceCloning() {
+	lang := t.model.currentLanguage.String()
+	// We don't know the model type at this point, and we won't know if the model supports voice cloning until we run the command.
+	// So we need to handle the speaker sample and index based on what the user has set.
+	if t.model.isCustom {
 		if t.speakerSample != "" {
 			args = append(args, "--speaker_wav", t.speakerSample)
+			args = append(args, "--language_idx", lang)
+		} else {
+			args = append(args, "--speaker_idx", t.speakerIdx)
+		}
+	} else {
+		// Handle voice cloning models (XTTS variants, YourTTS).
+		if t.model.SupportsVoiceCloning() {
+			if t.speakerSample != "" {
+				args = append(args, "--speaker_wav", t.speakerSample)
+			}
+
+			args = append(args, "--language_idx", lang)
 		}
 
-		lang := t.language.String()
-		if !t.model.SupportsLanguage(t.language) {
-			fmt.Println("\nWarning: Model does not support specified language, using default language instead.")
-			lang = string(t.model.defaultLanguage)
+		if t.speakerIdx != "" {
+			args = append(args, "--speaker_idx", t.speakerIdx)
 		}
-		args = append(args, "--language_idx", lang)
 	}
 
-	if t.speakerIdx != "" {
-		args = append(args, "--speaker_idx", t.speakerIdx)
-	}
+	fmt.Printf("\nArgs: %v\n", args)
 
 	return args
 }

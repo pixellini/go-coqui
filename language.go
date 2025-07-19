@@ -75,7 +75,8 @@ const (
 	Belarusian Language = "be"
 
 	// Other.
-	Universal Language = "universal" // Represents a model that supports all languages.
+	Universal    Language = "universal"    // Represents a model that supports all languages.
+	Multilingual Language = "multilingual" // Represents a model that supports multiple languages, often with regional variations.
 )
 
 // allSupportedLanguages contains the full list of languages supported by the available Coqui TTS models.
@@ -122,6 +123,8 @@ var allSupportedLanguages = []Language{
 	TwiAkuapem,
 	TwiAsante,
 	Belarusian,
+	Universal,
+	Multilingual,
 }
 
 // String returns the ISO 639-1 language code as a string.
@@ -170,7 +173,7 @@ func MustParseLanguage(s string) Language {
 	return lang
 }
 
-// GetAllSupportedLanguages returns a copy of all supported languages.
-func GetAllSupportedLanguages() []Language {
+// GetSupportedLanguages returns a copy of all supported languages.
+func GetSupportedLanguages() []Language {
 	return slices.Clone(allSupportedLanguages)
 }

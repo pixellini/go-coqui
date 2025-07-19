@@ -16,29 +16,37 @@ func (c optionFunc) apply(tts *TTS) error {
 // This allows access to all available Coqui TTS models.
 // If the model is not valid, it will panic with an error message.
 // Use WithCustomModel for custom models that may not be predefined.
-func WithModel(model TTSModel) Option {
+func WithModelId(modelId ModelIdentifier) Option {
 	return optionFunc(func(t *TTS) error {
-		return t.SetCurrentModel(model)
+		return t.SetCurrentModelIdentifier(modelId)
 	})
 }
 
-// WithVocoderModel sets a vocoder model to use alongside the TTS model.
+// WithVocoder sets a vocoder model to use alongside the TTS model.
 // TODO: Implement proper handling for vocoder models.
-func WithVocoderModel(vModel VocoderModel) Option {
+func WithVocoder(vModel Vocoder) Option {
 	return nil
 }
 
-// WithVoiceConversionModel sets a voice conversion model to use alongside the TTS model.
+// WithVoiceConversion sets a voice conversion model to use alongside the TTS model.
 // TODO: Implement proper handling for voice conversion models.
-func WithVoiceConversionModel(vcModel VoiceConversionModel) Option {
+func WithVoiceConversion(vcModel VoiceConversion) Option {
 	return nil
 }
 
-// WithLanguage sets the target language for TTS synthesis.
+// WithModelLanguage sets the target language for TTS synthesis.
 // Note: Language support varies by model.
-func WithLanguage(language Language) Option {
+func WithModelLanguage(language Language) Option {
 	return optionFunc(func(t *TTS) error {
-		return t.SetCurrentLanguage(language)
+		return t.SetCurrentModelLanguage(language)
+	})
+}
+
+// WithVocoderLanguage sets the target language for TTS synthesis.
+// Note: Language support varies by model.
+func WithVocoderLanguage(language Language) Option {
+	return optionFunc(func(t *TTS) error {
+		return t.SetCurrentVocoderLanguage(language)
 	})
 }
 

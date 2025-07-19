@@ -46,7 +46,7 @@ func isRuntimeGOOS() bool {
 	return runtime.GOOS == "darwin"
 }
 
-// isRuntimeGOARCH checks if the current architecture is ARM64 (Apple Silicon).
+// isRuntimeGOARCH checks if the current model is ARM64 (Apple Silicon).
 func isRuntimeGOARCH() bool {
 	return runtime.GOARCH == "arm64"
 }
@@ -72,7 +72,7 @@ func detectDevice() Device {
 	}
 
 	if isRuntimeGOOS() && isRuntimeGOARCH() {
-		fmt.Println("ARM64 architecture detected, using MPS.")
+		fmt.Println("ARM64 model detected, using MPS.")
 		return DeviceMPS
 	}
 
