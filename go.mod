@@ -1,6 +1,6 @@
 module github.com/pixellini/go-coqui
 
-go 1.24.4
+go 1.21
 
 require (
 	github.com/google/go-cmp v0.7.0
