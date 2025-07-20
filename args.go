@@ -80,7 +80,7 @@ func toArgs(t TTS) []string {
 	// Resolve "auto" device to actual device.
 	device := t.device
 	if device == model.DeviceAuto {
-		device = model.detectDevice()
+		device = model.DetectDevice()
 	}
 
 	args := []string{
@@ -105,10 +105,10 @@ func toArgs(t TTS) []string {
 
 	// TODO: Handle Voice Conversion models.
 
-	lang := t.model.currentLanguage.String()
+	lang := t.model.CurrentLanguage.String()
 	// We don't know the model type at this point, and we won't know if the model supports voice cloning until we run the command.
 	// So we need to handle the speaker sample and index based on what the user has set.
-	if t.model.isCustom {
+	if t.model.IsCustom {
 		if t.speakerSample != "" {
 			args = append(args, argSpeakerWav, t.speakerSample)
 			args = append(args, argLanguageIdx, lang)
@@ -117,7 +117,7 @@ func toArgs(t TTS) []string {
 		}
 	} else {
 		// Handle voice cloning models (XTTS variants, YourTTS).
-		if t.model.SupportsVoiceCloning() {
+		if t.model.SupportsCloning() {
 			if t.speakerSample != "" {
 				args = append(args, argSpeakerWav, t.speakerSample)
 			}

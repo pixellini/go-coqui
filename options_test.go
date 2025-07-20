@@ -9,14 +9,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var MockModelId = model.ModelIdentifier{
-	category:             model.modelTypeTTS,
-	dataset:              model.DatasetLibriTTS,
-	model:                model.BaseModelXTTSv2,
-	defaultLanguage:      model.English,
-	currentLanguage:      model.English,
-	supportedLanguages:   []model.Language{model.English, model.German, model.French},
-	supportsVoiceCloning: true,
+var MockDataset = model.Dataset("mock-dataset")
+var MockBaseModel = model.BaseModel("mock-base-model")
+var MockOutputDir = "/tmp/output"
+var MockModelId = model.Identifier{
+	Category:             model.TypeTTS,
+	Dataset:              MockDataset,
+	Model:                MockBaseModel,
+	DefaultLanguage:      model.English,
+	CurrentLanguage:      model.English,
+	SupportedLanguages:   []model.Language{model.English, model.German, model.French},
+	SupportsVoiceCloning: true,
 }
 
 func TestOptions(t *testing.T) {
@@ -51,7 +54,7 @@ func TestOptions(t *testing.T) {
 				tts.model = MockModelId
 			},
 			check: func(t *testing.T, tts *TTS) {
-				assert.Equal(t, model.English, tts.model.currentLanguage, "WithModelLanguage should set the model's currentLanguage field")
+				assert.Equal(t, model.English, tts.model.CurrentLanguage, "WithModelLanguage should set the model's currentLanguage field")
 			},
 		},
 		{
@@ -68,7 +71,7 @@ func TestOptions(t *testing.T) {
 				tts.vocoder = MockModelId
 			},
 			check: func(t *testing.T, tts *TTS) {
-				assert.Equal(t, model.English, tts.vocoder.currentLanguage, "WithVocoderLanguage should set the vocoder's currentLanguage field")
+				assert.Equal(t, model.English, tts.vocoder.CurrentLanguage, "WithVocoderLanguage should set the vocoder's currentLanguage field")
 			},
 		},
 		{
@@ -94,9 +97,9 @@ func TestOptions(t *testing.T) {
 		},
 		{
 			name:   "WithOutputDir",
-			option: WithOutputDir("/tmp/output"),
+			option: WithOutputDir(MockOutputDir),
 			check: func(t *testing.T, tts *TTS) {
-				assert.Equal(t, "/tmp/output", tts.outputDir, "WithOutputDir should set the outputDir field")
+				assert.Equal(t, MockOutputDir, tts.outputDir, "WithOutputDir should set the outputDir field")
 			},
 		},
 		{

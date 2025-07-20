@@ -1,6 +1,10 @@
 package coqui
 
-import "github.com/pixellini/go-coqui/model"
+import (
+	"github.com/pixellini/go-coqui/model"
+	"github.com/pixellini/go-coqui/models/vocoder"
+	"github.com/pixellini/go-coqui/models/voiceconversion"
+)
 
 // Option defines an interface for TTS configuration options.
 type Option interface {
@@ -18,9 +22,9 @@ func (c optionFunc) apply(tts *TTS) error {
 // This allows access to all available Coqui TTS models.
 // If the model is not valid, it will panic with an error message.
 // Use WithCustomModel for custom models that may not be predefined.
-func WithModelId(modelId model.ModelIdentifier) Option {
+func WithModelId(modelId model.Identifier) Option {
 	return optionFunc(func(t *TTS) error {
-		return t.SetCurrentModelIdentifier(modelId)
+		return t.SetCurrentIdentifier(modelId)
 	})
 }
 
@@ -41,9 +45,9 @@ func WithModelLanguage(language model.Language) Option {
 }
 
 // WithVocoder sets a vocoder model to use alongside the TTS model.
-func WithVocoder(vocoder model.Vocoder) Option {
+func WithVocoder(v vocoder.Vocoder) Option {
 	return optionFunc(func(t *TTS) error {
-		return t.SetCurrentVocoder(vocoder)
+		return t.SetCurrentVocoder(v)
 	})
 }
 
@@ -57,7 +61,7 @@ func WithVocoderLanguage(language model.Language) Option {
 
 // WithVoiceConversion sets a voice conversion model to use alongside the TTS model.
 // TODO: Implement proper handling for voice conversion models.
-func WithVoiceConversion(vcModel model.VoiceConversion) Option {
+func WithVoiceConversion(vcModel voiceconversion.VoiceConversion) Option {
 	return nil
 }
 

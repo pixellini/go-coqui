@@ -49,7 +49,7 @@ func TestIsCudaAvailable(t *testing.T) {
 }
 
 func TestDetectDevice(t *testing.T) {
-	device := detectDevice()
+	device := DetectDevice()
 	require.True(t, device.IsValid(), "detectDevice should return a valid device")
 	validDetectedDevices := []Device{DeviceCPU, DeviceCUDA, DeviceMPS}
 	assert.Contains(t, validDetectedDevices, device, "detectDevice returned unexpected device: %s", device)

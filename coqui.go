@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 
 	"github.com/pixellini/go-coqui/model"
+	"github.com/pixellini/go-coqui/models/tts"
+	"github.com/pixellini/go-coqui/models/vocoder"
 )
 
 // TTS represents a text-to-speech synthesis engine.
@@ -18,14 +20,14 @@ import (
 type TTS struct {
 	// model specifies the TTS model to use for synthesis.
 	// This can be a specific model like ModelXTTSv2 or a custom Model.
-	model model.TTSModel
+	model tts.TTSModel
 	// modelPath is the path to a custom TTS model.
 	// If set, this overrides the default model and uses the specified path.
 	modelPath string
 	// vocoder specifies the vocoder model to use for audio synthesis.
 	// If not set, the default vocoder for the model will be used.
 	// This is useful for advanced configurations where a specific vocoder is desired.
-	vocoder model.Vocoder
+	vocoder vocoder.Vocoder
 	// speakerSample is the path to the speaker sample file (XTTS only).
 	// Should be a clear audio sample of the desired voice (1-3 minutes recommended).
 	speakerSample string
@@ -54,7 +56,7 @@ const (
 func New(options ...Option) (*TTS, error) {
 	// Build the config, apply the defaults
 	tts := &TTS{
-		model:      model.TTSModelXTTSv2,
+		model:      tts.TTSModelXTTSv2,
 		outputDir:  defaultOutputDir,
 		device:     defaultDevice,
 		maxRetries: defaultMaxRetries,
@@ -67,11 +69,11 @@ func New(options ...Option) (*TTS, error) {
 		}
 	}
 
-	if tts.model.defaultLanguage != "" && tts.model.currentLanguage == "" {
-		tts.model.currentLanguage = defaultLanguage
+	if tts.model.DefaultLanguage != "" && tts.model.CurrentLanguage == "" {
+		tts.model.CurrentLanguage = defaultLanguage
 	}
-	if tts.vocoder.defaultLanguage != "" && tts.vocoder.currentLanguage == "" {
-		tts.vocoder.currentLanguage = defaultLanguage
+	if tts.vocoder.DefaultLanguage != "" && tts.vocoder.CurrentLanguage == "" {
+		tts.vocoder.CurrentLanguage = defaultLanguage
 	}
 
 	return tts, nil
@@ -80,7 +82,7 @@ func New(options ...Option) (*TTS, error) {
 // NewWithModelXttsV2 creates a new TTS instance configured for the XTTS v2 model.
 func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(model.TTSModelXTTSv2),
+		WithModelId(tts.TTSModelXTTSv2),
 	}, options...)
 	return New(opts...)
 }
@@ -88,7 +90,7 @@ func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 // NewWithModelXttsV1 creates a new TTS instance configured for the XTTS v1.1 model.
 func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(model.TTSModelXTTSv1),
+		WithModelId(tts.TTSModelXTTSv1),
 	}, options...)
 	return New(opts...)
 }
@@ -96,7 +98,7 @@ func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 // NewWithModelYourTTS creates a new TTS instance configured for the YourTTS model.
 func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(model.TTSModelYourTTS),
+		WithModelId(tts.TTSModelYourTTS),
 	}, options...)
 	return New(opts...)
 }
@@ -104,7 +106,7 @@ func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
 func NewWithModelBark(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(model.TTSModelBark),
+		WithModelId(tts.TTSModelBark),
 	}, options...)
 	return New(opts...)
 }
@@ -212,17 +214,17 @@ func (t TTS) Name() string {
 	// NOTE: This is currently a workaround so I can test the functionality.
 	// But this will break if the model supports multiple languages but is not "multilingual" as defined in the model name.
 	// TODO: Fix this to properly handle "multilingual" vs multilingual models.
-	language := t.model.currentLanguage.String()
+	language := t.model.CurrentLanguage.String()
 	if t.model.IsMultilingual() {
 		language = "multilingual"
 	}
-	return fmt.Sprintf("%s/%s/%s/%s", t.model.category, language, t.model.dataset, t.model.model)
+	return fmt.Sprintf("%s/%s/%s/%s", t.model.Category, language, t.model.Dataset, t.model.Model)
 }
 
 // VocoderName returns the full Coqui TTS vocoder name to use.
 // Format: vocoder_models/{language}/{dataset}/{model}
 func (t TTS) VocoderName() string {
-	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.category, t.vocoder.defaultLanguage, t.vocoder.dataset, t.vocoder.model)
+	return fmt.Sprintf("%s/%s/%s/%s", t.vocoder.Category, t.vocoder.DefaultLanguage, t.vocoder.Dataset, t.vocoder.Model)
 }
 
 // CurrentModel returns the Model being used for synthesis.
@@ -231,13 +233,13 @@ func (t TTS) CurrentModel() model.Model {
 }
 
 // CurrentVocoder returns the VocoderModel being used for synthesis.
-func (t TTS) CurrentVocoder() model.Vocoder {
+func (t TTS) CurrentVocoder() vocoder.Vocoder {
 	return t.vocoder
 }
 
 // CurrentModelLanguage returns the model.Language being used for synthesis.
 func (t TTS) CurrentModelLanguage() model.Language {
-	return t.model.currentLanguage
+	return t.model.CurrentLanguage
 }
 
 // CurrentSpeakerSample returns the path to the speaker sample file.
@@ -266,12 +268,12 @@ func (t TTS) CurrentMaxRetries() int {
 }
 
 // SetCurrentModel sets the TTS model to use for synthesis.
-func (t *TTS) SetCurrentModelIdentifier(m model.ModelIdentifier) error {
+func (t *TTS) SetCurrentIdentifier(m model.Identifier) error {
 	if err := m.Validate(); err != nil {
 		return fmt.Errorf("invalid TTS model specified: %s", err)
 	}
 	t.model = m
-	t.model.currentLanguage = m.defaultLanguage
+	t.model.CurrentLanguage = m.DefaultLanguage
 	t.modelPath = ""
 	return nil
 }
@@ -288,12 +290,12 @@ func (t *TTS) SetCurrentModelPath(p string) error {
 	}
 
 	t.modelPath = p
-	t.model.isCustom = true // Mark as custom model
+	t.model.IsCustom = true // Mark as custom model
 	return nil
 }
 
 // SetCurrentVocoder sets the vocoder model to use for audio synthesis.
-func (t *TTS) SetCurrentVocoder(v model.Vocoder) error {
+func (t *TTS) SetCurrentVocoder(v vocoder.Vocoder) error {
 	if err := v.Validate(); err != nil {
 		return fmt.Errorf("invalid Vocoder specified: %s", err)
 	}
@@ -309,7 +311,7 @@ func (t *TTS) SetCurrentModelLanguage(l model.Language) error {
 	if !t.model.SupportsLanguage(l) {
 		return fmt.Errorf("model %s does not support language %s", t.model.Name(), l.String())
 	}
-	t.model.currentLanguage = l
+	t.model.CurrentLanguage = l
 	return nil
 }
 
@@ -321,7 +323,7 @@ func (t *TTS) SetCurrentVocoderLanguage(l model.Language) error {
 	if !t.vocoder.SupportsLanguage(l) {
 		return fmt.Errorf("vocoder %s does not support language %s", t.vocoder.Name(), l.String())
 	}
-	t.vocoder.currentLanguage = l
+	t.vocoder.CurrentLanguage = l
 	return nil
 }
 
@@ -331,7 +333,7 @@ func (t *TTS) SetCurrentSpeaker(s string) error {
 		return fmt.Errorf("speaker cannot be empty")
 	}
 	// speaker has an extension (e.g. ".wav", ".mp3").
-	if filepath.Ext(s) != "" && t.model.SupportsVoiceCloning() {
+	if filepath.Ext(s) != "" && t.model.SupportsCloning() {
 		t.speakerSample = s
 	} else {
 		t.speakerIdx = s

@@ -18,7 +18,7 @@ func TestNewModel_Valid(t *testing.T) {
 	assert.Equal(t, English, m.CurrentLanguage)
 	assert.Equal(t, MockDataset, m.Dataset)
 	assert.Equal(t, MockBaseModel, m.Model)
-	assert.True(t, m.isCustom)
+	assert.True(t, m.IsCustom)
 }
 
 func TestNewModel_Invalid(t *testing.T) {
@@ -89,13 +89,13 @@ func TestIdentifier_SupportsLanguage(t *testing.T) {
 }
 
 func TestIdentifier_SupportsVoiceCloning(t *testing.T) {
-	m := Identifier{isCustom: true}
+	m := Identifier{IsCustom: true}
 	assert.True(t, m.SupportsCloning())
 
-	m2 := Identifier{isCustom: false, SupportsVoiceCloning: true}
+	m2 := Identifier{IsCustom: false, SupportsVoiceCloning: true}
 	assert.True(t, m2.SupportsCloning())
 
-	m3 := Identifier{isCustom: false, SupportsVoiceCloning: false}
+	m3 := Identifier{IsCustom: false, SupportsVoiceCloning: false}
 	assert.False(t, m3.SupportsCloning())
 }
 

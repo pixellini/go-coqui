@@ -49,7 +49,7 @@ type Identifier struct {
 	// supportsVoiceCloning indicates if the model supports voice cloning by providing a speaker sample.
 	SupportsVoiceCloning bool
 	// isCustom Indicates if this is a custom model not predefined in the library
-	isCustom bool
+	IsCustom bool
 }
 
 // NewModel creates a new custom Model Identifier.
@@ -94,7 +94,7 @@ func NewModel(t Type, m BaseModel, d Dataset, l Language) (Identifier, error) {
 		CurrentLanguage:      l,
 		SupportedLanguages:   supportedLanguages,
 		SupportsVoiceCloning: false, // Default to false, can be set later if needed.
-		isCustom:             true,
+		IsCustom:             true,
 	}, nil
 }
 
@@ -122,7 +122,7 @@ func (id Identifier) IsValid() bool {
 // Validate checks if the model identifier is valid and returns an error explaining why it's invalid.
 func (id Identifier) Validate() error {
 	// Assume it's valid if it's a custom model provided by the user.
-	if id.isCustom {
+	if id.IsCustom {
 		return nil
 	}
 	if !slices.Contains(types, id.Category) {
@@ -153,7 +153,7 @@ func (id Identifier) SupportsLanguage(lang Language) bool {
 
 // SupportsVoiceCloning checks if the model supports voice cloning by providing a speaker sample.
 func (id Identifier) SupportsCloning() bool {
-	if id.isCustom {
+	if id.IsCustom {
 		return true // Custom models are assumed to support voice cloning.
 	}
 	return id.SupportsVoiceCloning

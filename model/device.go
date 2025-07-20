@@ -69,7 +69,7 @@ func isCudaAvailable() bool {
 // It might be better/easier to let the user explicitly set the device.
 // When I implement more devices, this function could become more complex.
 // I'll make that decision later.
-func detectDevice() Device {
+func DetectDevice() Device {
 	if isCudaAvailable() {
 		return DeviceCUDA
 	}
