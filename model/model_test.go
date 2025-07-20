@@ -7,46 +7,50 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var MockBaseModel = BaseModel("mock-base-model")
+var MockDataset = Dataset("mock-dataset")
+var MockDataset2 = Dataset("mock-dataset2")
+
 func TestNewModel_Valid(t *testing.T) {
-	m, err := NewModel(modelTypeTTS, BaseModelTacotron2DDC, DatasetLJSpeech, English)
+	m, err := NewModel(TypeTTS, MockBaseModel, MockDataset, English)
 	require.NoError(t, err)
-	assert.Equal(t, modelTypeTTS, m.category)
-	assert.Equal(t, English, m.currentLanguage)
-	assert.Equal(t, DatasetLJSpeech, m.dataset)
-	assert.Equal(t, BaseModelTacotron2DDC, m.model)
+	assert.Equal(t, TypeTTS, m.Category)
+	assert.Equal(t, English, m.CurrentLanguage)
+	assert.Equal(t, MockDataset, m.Dataset)
+	assert.Equal(t, MockBaseModel, m.Model)
 	assert.True(t, m.isCustom)
 }
 
 func TestNewModel_Invalid(t *testing.T) {
-	_, err := NewModel("", BaseModelTacotron2DDC, DatasetLJSpeech, English)
+	_, err := NewModel("", MockBaseModel, MockDataset, English)
 	assert.Error(t, err)
 
-	_, err = NewModel(modelTypeTTS, BaseModelTacotron2DDC, DatasetLJSpeech, "")
+	_, err = NewModel(TypeTTS, MockBaseModel, MockDataset, "")
 	assert.Error(t, err)
 
-	_, err = NewModel(modelTypeTTS, BaseModelTacotron2DDC, "", English)
+	_, err = NewModel(TypeTTS, MockBaseModel, "", English)
 	assert.Error(t, err)
 
-	_, err = NewModel(modelTypeTTS, "", DatasetLJSpeech, English)
+	_, err = NewModel(TypeTTS, "", MockDataset, English)
 	assert.Error(t, err)
 }
 
-func TestModelIdentifier_Name(t *testing.T) {
-	m := ModelIdentifier{
-		category:        modelTypeTTS,
-		currentLanguage: English,
-		dataset:         DatasetLJSpeech,
-		model:           BaseModelTacotron2DDC,
+func TestIdentifier_Name(t *testing.T) {
+	m := Identifier{
+		Category:        TypeTTS,
+		CurrentLanguage: English,
+		Dataset:         MockDataset,
+		Model:           MockBaseModel,
 	}
 	assert.Equal(t, "tts_models/en/ljspeech/tacotron2-DDC", m.Name())
 }
 
-func TestModelIdentifier_NameList(t *testing.T) {
-	m := ModelIdentifier{
-		category:           modelTypeTTS,
-		dataset:            DatasetLJSpeech,
-		model:              BaseModelTacotron2DDC,
-		supportedLanguages: []Language{English, French},
+func TestIdentifier_NameList(t *testing.T) {
+	m := Identifier{
+		Category:           TypeTTS,
+		Dataset:            MockDataset,
+		Model:              MockBaseModel,
+		SupportedLanguages: []Language{English, French},
 	}
 	expected := []string{
 		"tts_models/ljspeech/en/tacotron2-DDC",
@@ -55,95 +59,95 @@ func TestModelIdentifier_NameList(t *testing.T) {
 	assert.Equal(t, expected, m.NameList())
 }
 
-func TestModelIdentifier_IsValid_Validate(t *testing.T) {
-	m := ModelIdentifier{
-		category:           modelTypeTTS,
-		dataset:            DatasetLJSpeech,
-		model:              BaseModelTacotron2DDC,
-		supportedLanguages: []Language{English},
+func TestIdentifier_IsValid_Validate(t *testing.T) {
+	m := Identifier{
+		Category:           TypeTTS,
+		Dataset:            MockDataset,
+		Model:              MockBaseModel,
+		SupportedLanguages: []Language{English},
 	}
 	assert.True(t, m.IsValid())
 	assert.NoError(t, m.Validate())
 
-	invalid := ModelIdentifier{}
+	invalid := Identifier{}
 	assert.False(t, invalid.IsValid())
 	assert.Error(t, invalid.Validate())
 }
 
-func TestModelIdentifier_IsMultilingual(t *testing.T) {
-	m := ModelIdentifier{supportedLanguages: []Language{English, French}}
+func TestIdentifier_IsMultilingual(t *testing.T) {
+	m := Identifier{SupportedLanguages: []Language{English, French}}
 	assert.True(t, m.IsMultilingual())
 
-	m2 := ModelIdentifier{supportedLanguages: []Language{English}}
+	m2 := Identifier{SupportedLanguages: []Language{English}}
 	assert.False(t, m2.IsMultilingual())
 }
 
-func TestModelIdentifier_SupportsLanguage(t *testing.T) {
-	m := ModelIdentifier{supportedLanguages: []Language{English, French}}
+func TestIdentifier_SupportsLanguage(t *testing.T) {
+	m := Identifier{SupportedLanguages: []Language{English, French}}
 	assert.True(t, m.SupportsLanguage(English))
 	assert.False(t, m.SupportsLanguage(German))
 }
 
-func TestModelIdentifier_SupportsVoiceCloning(t *testing.T) {
-	m := ModelIdentifier{isCustom: true}
-	assert.True(t, m.SupportsVoiceCloning())
+func TestIdentifier_SupportsVoiceCloning(t *testing.T) {
+	m := Identifier{isCustom: true}
+	assert.True(t, m.SupportsCloning())
 
-	m2 := ModelIdentifier{isCustom: false, supportsVoiceCloning: true}
-	assert.True(t, m2.SupportsVoiceCloning())
+	m2 := Identifier{isCustom: false, SupportsVoiceCloning: true}
+	assert.True(t, m2.SupportsCloning())
 
-	m3 := ModelIdentifier{isCustom: false, supportsVoiceCloning: false}
-	assert.False(t, m3.SupportsVoiceCloning())
+	m3 := Identifier{isCustom: false, SupportsVoiceCloning: false}
+	assert.False(t, m3.SupportsCloning())
 }
 
-func TestModelIdentifier_Getters(t *testing.T) {
-	m := ModelIdentifier{
-		category:           modelTypeTTS,
-		dataset:            DatasetLJSpeech,
-		model:              BaseModelTacotron2DDC,
-		currentLanguage:    English,
-		defaultLanguage:    French,
-		supportedLanguages: []Language{English, French},
+func TestIdentifier_Getters(t *testing.T) {
+	m := Identifier{
+		Category:           TypeTTS,
+		Dataset:            MockDataset,
+		Model:              MockBaseModel,
+		CurrentLanguage:    English,
+		DefaultLanguage:    French,
+		SupportedLanguages: []Language{English, French},
 	}
-	assert.Equal(t, modelTypeTTS, m.GetCategory())
-	assert.Equal(t, BaseModelTacotron2DDC, m.GetBaseModel())
-	assert.Equal(t, DatasetLJSpeech, m.GetDataset())
+	assert.Equal(t, TypeTTS, m.GetType())
+	assert.Equal(t, MockBaseModel, m.GetBaseModel())
+	assert.Equal(t, MockDataset, m.GetDataset())
 	assert.Equal(t, English, m.GetCurrentLanguage())
 	assert.Equal(t, French, m.GetDefaultLanguage())
 	assert.Equal(t, []Language{English, French}, m.GetSupportedLanguages())
 }
 
 func TestModelList_FilterMethods(t *testing.T) {
-	m1 := ModelIdentifier{
-		category:           modelTypeTTS,
-		dataset:            DatasetLJSpeech,
-		model:              BaseModelTacotron2DDC,
-		defaultLanguage:    English,
-		supportedLanguages: []Language{English, French},
+	m1 := Identifier{
+		Category:           TypeTTS,
+		Dataset:            MockDataset,
+		Model:              MockBaseModel,
+		DefaultLanguage:    English,
+		SupportedLanguages: []Language{English, French},
 	}
-	m2 := ModelIdentifier{
-		category:           modelTypeTTS,
-		dataset:            DatasetLJSpeech,
-		model:              BaseModelTacotron2DDC,
-		defaultLanguage:    French,
-		supportedLanguages: []Language{French},
+	m2 := Identifier{
+		Category:           TypeTTS,
+		Dataset:            MockDataset,
+		Model:              MockBaseModel,
+		DefaultLanguage:    French,
+		SupportedLanguages: []Language{French},
 	}
-	m3 := ModelIdentifier{
-		category:           modelTypeTTS,
-		dataset:            DatasetVCTK,
-		model:              BaseModelVITS,
-		defaultLanguage:    German,
-		supportedLanguages: []Language{German},
+	m3 := Identifier{
+		Category:           TypeTTS,
+		Dataset:            MockDataset2,
+		Model:              MockBaseModel,
+		DefaultLanguage:    German,
+		SupportedLanguages: []Language{German},
 	}
-	list := ModelList[ModelIdentifier]{
-		models: []ModelIdentifier{m1, m2, m3},
+	list := ModelList[Identifier]{
+		Models: []Identifier{m1, m2, m3},
 	}
 
 	// FilterByBaseModel
-	filtered := list.FilterByBaseModel(BaseModelTacotron2DDC)
-	assert.Len(t, filtered.models, 2)
+	filtered := list.FilterByBaseModel(MockBaseModel)
+	assert.Len(t, filtered.Models, 2)
 
 	// FilterByDataset
-	filteredByDataset := list.FilterByDataset(DatasetLJSpeech)
+	filteredByDataset := list.FilterByDataset(MockDataset)
 	assert.Len(t, filteredByDataset, 2)
 
 	// FilterBySupportedLanguages

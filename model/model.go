@@ -18,8 +18,8 @@ type Model interface {
 	Validate() error
 	// IsMultilingual checks if the model supports multiple languages.
 	IsMultilingual() bool
-	// GetCategory returns the type of the model (e.g., TTS, Vocoder, Voice Conversion).
-	GetCategory() Category
+	// GetType returns the type of the model (e.g., TTS, Vocoder, Voice Conversion).
+	GetType() Type
 	// GetModel returns the architecture of the model (e.g., Wavegrad, MelGAN).
 	GetBaseModel() BaseModel
 	// GetDataset returns the dataset used by the model.
@@ -30,186 +30,186 @@ type Model interface {
 	GetSupportedLanguages() []Language
 }
 
-// ModelIdentifier represents a comprehensive model identifier.
-type ModelIdentifier struct {
+// Identifier represents a comprehensive model identifier.
+type Identifier struct {
 	// category of the model (e.g., TTS, Vocoder, Voice Conversion).
-	category Category
+	Category Type
 	// dataset used by the model (e.g., LJSpeech, VCTK, Common Voice).
-	dataset Dataset
+	Dataset Dataset
 	// architecture of the model (e.g., Tacotron2, VITS, GlowTTS).
-	model BaseModel
+	Model BaseModel
 	// defaultLanguage is the primary language for this model.
 	// There isn't any documentation on which language is the default for each model,
 	// so I assume the default language is English, or the first language in the supportedLanguages list.
-	defaultLanguage Language
+	DefaultLanguage Language
 	// supportedLanguages lists all languages this model supports.
-	supportedLanguages []Language
+	SupportedLanguages []Language
 	// currentLanguage is the language currently set for this model.
-	currentLanguage Language
+	CurrentLanguage Language
 	// supportsVoiceCloning indicates if the model supports voice cloning by providing a speaker sample.
-	supportsVoiceCloning bool
+	SupportsVoiceCloning bool
 	// isCustom Indicates if this is a custom model not predefined in the library
 	isCustom bool
 }
 
 // NewModel creates a new custom Model Identifier.
 // This is useful for models that are not predefined in the Coqui TTS library.
-func NewModel(modelType Category, model BaseModel, dataset Dataset, language Language) (ModelIdentifier, error) {
-	if modelType == "" {
-		return ModelIdentifier{}, fmt.Errorf("model type cannot be empty")
+func NewModel(t Type, m BaseModel, d Dataset, l Language) (Identifier, error) {
+	if t == "" {
+		return Identifier{}, fmt.Errorf("model type cannot be empty")
 	}
-	if language == "" {
-		return ModelIdentifier{}, fmt.Errorf("language cannot be empty")
+	if l == "" {
+		return Identifier{}, fmt.Errorf("language cannot be empty")
 	}
-	if dataset == "" {
-		return ModelIdentifier{}, fmt.Errorf("dataset cannot be empty")
+	if d == "" {
+		return Identifier{}, fmt.Errorf("dataset cannot be empty")
 	}
-	if model == "" {
-		return ModelIdentifier{}, fmt.Errorf("model architecture cannot be empty")
-	}
-
-	if !slices.Contains(modelTypes, modelType) {
-		return ModelIdentifier{}, fmt.Errorf("unsupported model type: %s", modelType)
-	}
-	if !language.IsSupported() {
-		return ModelIdentifier{}, fmt.Errorf("unsupported language: %s", language)
-	}
-	if !dataset.isPreset() {
-		return ModelIdentifier{}, fmt.Errorf("unsupported dataset: %s", dataset)
+	if m == "" {
+		return Identifier{}, fmt.Errorf("model architecture cannot be empty")
 	}
 
-	var supportedLanguages = []Language{language}
-	if language == Universal || language == Multilingual {
+	if !slices.Contains(types, t) {
+		return Identifier{}, fmt.Errorf("unsupported model type: %s", t)
+	}
+	if !l.IsSupported() {
+		return Identifier{}, fmt.Errorf("unsupported language: %s", l)
+	}
+	if !d.isPreset() {
+		return Identifier{}, fmt.Errorf("unsupported dataset: %s", d)
+	}
+
+	var supportedLanguages = []Language{l}
+	if l == Universal || l == Multilingual {
 		// If the language is Universal or Multilingual, we assume it supports all languages.
 		supportedLanguages = GetSupportedLanguages()
 	}
 
 	// TODO: Need a method to point to a custom model via a path.
 	// IDEA: It would be cool to add a method that splits the Model Name from a string like "tts_models/en/ek1/tacotron2" into its components.
-	return ModelIdentifier{
-		category:             modelType,
-		dataset:              dataset,
-		model:                model,
-		defaultLanguage:      language,
-		currentLanguage:      language,
-		supportedLanguages:   supportedLanguages,
-		supportsVoiceCloning: false, // Default to false, can be set later if needed.
+	return Identifier{
+		Category:             t,
+		Dataset:              d,
+		Model:                m,
+		DefaultLanguage:      l,
+		CurrentLanguage:      l,
+		SupportedLanguages:   supportedLanguages,
+		SupportsVoiceCloning: false, // Default to false, can be set later if needed.
 		isCustom:             true,
 	}, nil
 }
 
 // Name returns a string representation of the model identifier.
 // It formats the model identifier as "category/dataset/language/model".
-func (m ModelIdentifier) Name() string {
-	return fmt.Sprintf("%s/%s/%s/%s", m.GetCategory(), m.GetCurrentLanguage(), m.GetDataset(), m.GetBaseModel())
+func (id Identifier) Name() string {
+	return fmt.Sprintf("%s/%s/%s/%s", id.GetType(), id.GetCurrentLanguage(), id.GetDataset(), id.GetBaseModel())
 }
 
 // NameList returns a list of string representations of the model identifier for each supported language.
-func (m ModelIdentifier) NameList() []string {
+func (id Identifier) NameList() []string {
 	var names []string
-	for _, lang := range m.supportedLanguages {
-		name := fmt.Sprintf("%s/%s/%s/%s", m.GetCategory(), m.GetDataset(), lang, m.GetBaseModel())
+	for _, lang := range id.SupportedLanguages {
+		name := fmt.Sprintf("%s/%s/%s/%s", id.GetType(), id.GetDataset(), lang, id.GetBaseModel())
 		names = append(names, name)
 	}
 	return names
 }
 
 // IsValid checks if the model identifier is valid.
-func (m ModelIdentifier) IsValid() bool {
-	return m.Validate() == nil
+func (id Identifier) IsValid() bool {
+	return id.Validate() == nil
 }
 
 // Validate checks if the model identifier is valid and returns an error explaining why it's invalid.
-func (m ModelIdentifier) Validate() error {
+func (id Identifier) Validate() error {
 	// Assume it's valid if it's a custom model provided by the user.
-	if m.isCustom {
+	if id.isCustom {
 		return nil
 	}
-	if !slices.Contains(modelTypes, m.category) {
-		return fmt.Errorf("unsupported model type: %s", m.category)
+	if !slices.Contains(types, id.Category) {
+		return fmt.Errorf("unsupported model type: %s", id.Category)
 	}
-	if m.model == "" {
-		return fmt.Errorf("architecture cannot be empty for model type: %s", m.category)
+	if id.Model == "" {
+		return fmt.Errorf("architecture cannot be empty for model type: %s", id.Category)
 	}
-	if m.dataset == "" {
-		return fmt.Errorf("dataset cannot be empty for model type: %s", m.category)
+	if id.Dataset == "" {
+		return fmt.Errorf("dataset cannot be empty for model type: %s", id.Category)
 	}
-	if len(m.supportedLanguages) == 0 {
-		return fmt.Errorf("supported languages cannot be empty for model type: %s", m.category)
+	if len(id.SupportedLanguages) == 0 {
+		return fmt.Errorf("supported languages cannot be empty for model type: %s", id.Category)
 	}
 
 	return nil
 }
 
 // IsMultilingual returns true if the effective model supports multiple languages.
-func (m ModelIdentifier) IsMultilingual() bool {
-	return len(m.supportedLanguages) > 1
+func (id Identifier) IsMultilingual() bool {
+	return len(id.SupportedLanguages) > 1
 }
 
 // SupportsLanguage checks if the model supports the specified language.
-func (m ModelIdentifier) SupportsLanguage(lang Language) bool {
-	return slices.Contains(m.supportedLanguages, lang)
+func (id Identifier) SupportsLanguage(lang Language) bool {
+	return slices.Contains(id.SupportedLanguages, lang)
 }
 
 // SupportsVoiceCloning checks if the model supports voice cloning by providing a speaker sample.
-func (m ModelIdentifier) SupportsVoiceCloning() bool {
-	if m.isCustom {
+func (id Identifier) SupportsCloning() bool {
+	if id.isCustom {
 		return true // Custom models are assumed to support voice cloning.
 	}
-	return m.supportsVoiceCloning
+	return id.SupportsVoiceCloning
 }
 
-// GetCategory returns the model type.
-func (m ModelIdentifier) GetCategory() Category {
-	return m.category
+// GetType returns the model type.
+func (id Identifier) GetType() Type {
+	return id.Category
 }
 
 // GetBaseModel returns the model architecture.
-func (m ModelIdentifier) GetBaseModel() BaseModel {
-	return m.model
+func (id Identifier) GetBaseModel() BaseModel {
+	return id.Model
 }
 
 // GetDataset returns the model dataset.
-func (m ModelIdentifier) GetDataset() Dataset {
-	return m.dataset
+func (id Identifier) GetDataset() Dataset {
+	return id.Dataset
 }
 
 // GetCurrentLanguage returns the current language set for the model.
-func (m ModelIdentifier) GetCurrentLanguage() Language {
-	return m.currentLanguage
+func (id Identifier) GetCurrentLanguage() Language {
+	return id.CurrentLanguage
 }
 
 // GetDefaultLanguage returns the default language of the model.
 // There isn't any documentation on which language is the default for each model,
 // so I assume the default language is English, or the first language in the supportedLanguages list.
-func (m ModelIdentifier) GetDefaultLanguage() Language {
-	return m.defaultLanguage
+func (id Identifier) GetDefaultLanguage() Language {
+	return id.DefaultLanguage
 }
 
 // GetSupportedLanguages returns the supported languages.
-func (m ModelIdentifier) GetSupportedLanguages() []Language {
-	return m.supportedLanguages
+func (id Identifier) GetSupportedLanguages() []Language {
+	return id.SupportedLanguages
 }
 
 type ModelList[T Model] struct {
-	models []T
+	Models []T
 }
 
 // FilterByBaseModel filters any slice of Model by architecture.
 func (m *ModelList[T]) FilterByBaseModel(baseModel BaseModel) *ModelList[T] {
 	var result []T
-	for _, model := range m.models {
+	for _, model := range m.Models {
 		if model.GetBaseModel() == baseModel {
 			result = append(result, model)
 		}
 	}
-	return &ModelList[T]{models: result}
+	return &ModelList[T]{Models: result}
 }
 
 // FilterByDataset filters any slice of Model by dataset.
 func (m *ModelList[T]) FilterByDataset(dataset Dataset) []T {
 	var result []T
-	for _, model := range m.models {
+	for _, model := range m.Models {
 		if model.GetDataset() == dataset {
 			result = append(result, model)
 		}
@@ -220,7 +220,7 @@ func (m *ModelList[T]) FilterByDataset(dataset Dataset) []T {
 // FilterBySupportedLanguages filters models that support any of the specified languages.
 func (m *ModelList[T]) FilterBySupportedLanguages(languages []Language) []T {
 	var result []T
-	for _, model := range m.models {
+	for _, model := range m.Models {
 		modelSupported := model.GetSupportedLanguages()
 		// Check if any of the model's supported languages match any of the requested languages.
 		for _, supportedLang := range modelSupported {
@@ -239,7 +239,7 @@ func (m *ModelList[T]) FilterBySupportedLanguages(languages []Language) []T {
 // FilterByMultilingual returns all models that support multiple languages.
 func (m *ModelList[T]) FilterByMultilingual() []T {
 	var result []T
-	for _, model := range m.models {
+	for _, model := range m.Models {
 		if model.IsMultilingual() {
 			result = append(result, model)
 		}
@@ -250,7 +250,7 @@ func (m *ModelList[T]) FilterByMultilingual() []T {
 // FilterByDefaultLanguage filters models by their default language.
 func (m *ModelList[T]) FilterByDefaultLanguage(language Language) []T {
 	var result []T
-	for _, model := range m.models {
+	for _, model := range m.Models {
 		if model.GetDefaultLanguage() == language {
 			result = append(result, model)
 		}
