@@ -1,5 +1,7 @@
 package coqui
 
+import "github.com/pixellini/go-coqui/model"
+
 // TODO: I'll remove some of these if I don't need them later.
 // For now, I just want an easy reference to the CLI arguments.
 const (
@@ -77,8 +79,8 @@ const (
 func toArgs(t TTS) []string {
 	// Resolve "auto" device to actual device.
 	device := t.device
-	if device == DeviceAuto {
-		device = detectDevice()
+	if device == model.DeviceAuto {
+		device = model.detectDevice()
 	}
 
 	args := []string{
@@ -92,7 +94,7 @@ func toArgs(t TTS) []string {
 	}
 
 	// Explicitly set CUDA usage based on device.
-	if device == DeviceCUDA {
+	if device == model.DeviceCUDA {
 		args = append(args, argUseCuda, "true")
 	}
 

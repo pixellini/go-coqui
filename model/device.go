@@ -1,4 +1,4 @@
-package coqui
+package model
 
 import (
 	"os/exec"

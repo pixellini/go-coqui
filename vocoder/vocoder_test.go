@@ -1,16 +1,17 @@
-package coqui
+package vocoder
 
 import (
 	"testing"
 
+	"github.com/pixellini/go-coqui/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNewVocoder(t *testing.T) {
-	v, err := NewVocoder(BaseVoiceConversionFreevc24, DatasetVCTK, English)
+	v, err := NewVocoder(model.BaseVoiceConversionFreevc24, model.DatasetVCTK, model.English)
 	require.NoError(t, err, "NewVocoder should not return an error for valid input")
-	assert.Equal(t, modelTypeVocoder, v.category, "NewVocoder should set category to modelTypeVocoder")
+	assert.Equal(t, model.modelTypeVocoder, v.category, "NewVocoder should set category to modelTypeVocoder")
 }
 
 func TestGetVocoders(t *testing.T) {

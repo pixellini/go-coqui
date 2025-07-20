@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/pixellini/go-coqui/model"
 )
 
 func baseTTS() *TTS {
@@ -19,13 +20,13 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "CPU, modelPath, no vocoder, not custom",
 			setup: func(tts *TTS) {
-				tts.device = DeviceCPU
+				tts.device = model.DeviceCPU
 				tts.modelPath = "/path/to/model"
-				tts.model = ModelIdentifier{
+				tts.model = model.ModelIdentifier{
 					category:        "tts",
-					currentLanguage: English,
-					dataset:         DatasetLJSpeech,
-					model:           BaseModelTacotron2DDC,
+					currentLanguage: model.English,
+					dataset:         model.DatasetLJSpeech,
+					model:           model.BaseModelTacotron2DDC,
 				}
 			},
 			expected: []string{argDevice, "cpu", argModelPath, "/path/to/model"},
@@ -33,17 +34,17 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "CUDA, modelName, vocoder, not custom",
 			setup: func(tts *TTS) {
-				tts.device = DeviceCUDA
-				tts.model = ModelIdentifier{
+				tts.device = model.DeviceCUDA
+				tts.model = model.ModelIdentifier{
 					category:        "tts",
-					currentLanguage: Spanish,
-					dataset:         DatasetCV,
-					model:           BaseModelVITS,
+					currentLanguage: model.Spanish,
+					dataset:         model.DatasetCV,
+					model:           model.BaseModelVITS,
 				}
-				tts.vocoder = ModelIdentifier{
-					model:           BaseModelVITS,
-					defaultLanguage: Spanish,
-					dataset:         DatasetCV,
+				tts.vocoder = model.ModelIdentifier{
+					model:           model.BaseModelVITS,
+					defaultLanguage: model.Spanish,
+					dataset:         model.DatasetCV,
 				}
 			},
 			expected: []string{
@@ -55,12 +56,12 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "Auto device resolves, speaker sample, custom model",
 			setup: func(tts *TTS) {
-				tts.device = DeviceAuto
-				tts.model = ModelIdentifier{
+				tts.device = model.DeviceAuto
+				tts.model = model.ModelIdentifier{
 					category:        "tts",
-					currentLanguage: French,
-					dataset:         DatasetLJSpeech,
-					model:           BaseModelTacotron2DDC,
+					currentLanguage: model.French,
+					dataset:         model.DatasetLJSpeech,
+					model:           model.BaseModelTacotron2DDC,
 					isCustom:        true,
 				}
 				tts.speakerIdx = "spk1"
@@ -74,12 +75,12 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "Voice cloning, speaker sample, not custom",
 			setup: func(tts *TTS) {
-				tts.device = DeviceCPU
-				tts.model = ModelIdentifier{
+				tts.device = model.DeviceCPU
+				tts.model = model.ModelIdentifier{
 					category:             "tts",
-					currentLanguage:      German,
-					dataset:              DatasetVCTK,
-					model:                BaseModelVITS,
+					currentLanguage:      model.German,
+					dataset:              model.DatasetVCTK,
+					model:                model.BaseModelVITS,
 					supportsVoiceCloning: true,
 				}
 				tts.speakerSample = "/tmp/clone.wav"
@@ -96,12 +97,12 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "Voice cloning, no speaker sample, not custom",
 			setup: func(tts *TTS) {
-				tts.device = DeviceCPU
-				tts.model = ModelIdentifier{
+				tts.device = model.DeviceCPU
+				tts.model = model.ModelIdentifier{
 					category:             "tts",
-					currentLanguage:      Japanese,
-					dataset:              DatasetCSS10,
-					model:                BaseModelVITS,
+					currentLanguage:      model.Japanese,
+					dataset:              model.DatasetCSS10,
+					model:                model.BaseModelVITS,
 					supportsVoiceCloning: true,
 				}
 				tts.speakerIdx = "spk3"
@@ -121,17 +122,17 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "Custom model with vocoder (invalid combination)",
 			setup: func(tts *TTS) {
-				tts.model = ModelIdentifier{
+				tts.model = model.ModelIdentifier{
 					category:        "tts",
-					currentLanguage: English,
-					dataset:         DatasetLJSpeech,
-					model:           BaseModelTacotron2DDC,
+					currentLanguage: model.English,
+					dataset:         model.DatasetLJSpeech,
+					model:           model.BaseModelTacotron2DDC,
 					isCustom:        true,
 				}
-				tts.vocoder = ModelIdentifier{
-					model:           BaseModelVITS,
-					defaultLanguage: English,
-					dataset:         DatasetLJSpeech,
+				tts.vocoder = model.ModelIdentifier{
+					model:           model.BaseModelVITS,
+					defaultLanguage: model.English,
+					dataset:         model.DatasetLJSpeech,
 				}
 			},
 			expected: []string{argDevice, "", argModelName, "tts/en/ljspeech/tacotron2-DDC", argSpeakerIdx, ""},
@@ -139,11 +140,11 @@ func TestToArgs(t *testing.T) {
 		{
 			name: "Missing device",
 			setup: func(tts *TTS) {
-				tts.model = ModelIdentifier{
+				tts.model = model.ModelIdentifier{
 					category:        "tts",
-					currentLanguage: English,
-					dataset:         DatasetLJSpeech,
-					model:           BaseModelTacotron2DDC,
+					currentLanguage: model.English,
+					dataset:         model.DatasetLJSpeech,
+					model:           model.BaseModelTacotron2DDC,
 					isCustom:        true,
 				}
 			},

@@ -1,5 +1,7 @@
 package coqui
 
+import "github.com/pixellini/go-coqui/model"
+
 // Option defines an interface for TTS configuration options.
 type Option interface {
 	apply(*TTS) error
@@ -16,7 +18,7 @@ func (c optionFunc) apply(tts *TTS) error {
 // This allows access to all available Coqui TTS models.
 // If the model is not valid, it will panic with an error message.
 // Use WithCustomModel for custom models that may not be predefined.
-func WithModelId(modelId ModelIdentifier) Option {
+func WithModelId(modelId model.ModelIdentifier) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentModelIdentifier(modelId)
 	})
@@ -32,14 +34,14 @@ func WithModelPath(path string) Option {
 
 // WithModelLanguage sets the target language for TTS synthesis.
 // Note: Language support varies by model.
-func WithModelLanguage(language Language) Option {
+func WithModelLanguage(language model.Language) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentModelLanguage(language)
 	})
 }
 
 // WithVocoder sets a vocoder model to use alongside the TTS model.
-func WithVocoder(vocoder Vocoder) Option {
+func WithVocoder(vocoder model.Vocoder) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentVocoder(vocoder)
 	})
@@ -47,7 +49,7 @@ func WithVocoder(vocoder Vocoder) Option {
 
 // WithVocoderLanguage sets the target language for TTS synthesis.
 // Note: Language support varies by model.
-func WithVocoderLanguage(language Language) Option {
+func WithVocoderLanguage(language model.Language) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentVocoderLanguage(language)
 	})
@@ -55,7 +57,7 @@ func WithVocoderLanguage(language Language) Option {
 
 // WithVoiceConversion sets a voice conversion model to use alongside the TTS model.
 // TODO: Implement proper handling for voice conversion models.
-func WithVoiceConversion(vcModel VoiceConversion) Option {
+func WithVoiceConversion(vcModel model.VoiceConversion) Option {
 	return nil
 }
 
@@ -90,7 +92,7 @@ func WithOutputDir(dir string) Option {
 
 // WithDevice sets the compute device for TTS synthesis.
 // If Auto is specified, the best available device will be detected automatically.
-func WithDevice(device Device) Option {
+func WithDevice(device model.Device) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentDevice(device)
 	})

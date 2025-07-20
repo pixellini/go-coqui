@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/pixellini/go-coqui/model"
 )
 
 // TTS represents a text-to-speech synthesis engine.
@@ -16,14 +18,14 @@ import (
 type TTS struct {
 	// model specifies the TTS model to use for synthesis.
 	// This can be a specific model like ModelXTTSv2 or a custom Model.
-	model TTSModel
+	model model.TTSModel
 	// modelPath is the path to a custom TTS model.
 	// If set, this overrides the default model and uses the specified path.
 	modelPath string
 	// vocoder specifies the vocoder model to use for audio synthesis.
 	// If not set, the default vocoder for the model will be used.
 	// This is useful for advanced configurations where a specific vocoder is desired.
-	vocoder Vocoder
+	vocoder model.Vocoder
 	// speakerSample is the path to the speaker sample file (XTTS only).
 	// Should be a clear audio sample of the desired voice (1-3 minutes recommended).
 	speakerSample string
@@ -35,16 +37,16 @@ type TTS struct {
 	outputDir string
 	// device specifies the compute device (auto/cpu/cuda/mps).
 	// Use "auto" for automatic detection, "cuda" for GPU acceleration if available.
-	device Device
+	device model.Device
 	// maxRetries is the maximum number of synthesis attempts on failure.
 	// Recommended range is 1-5; higher values increase reliability but slow down failure recovery.
 	maxRetries int
 }
 
 const (
-	defaultLanguage   = English
+	defaultLanguage   = model.English
 	defaultOutputDir  = "./dist/"
-	defaultDevice     = DeviceAuto
+	defaultDevice     = model.DeviceAuto
 	defaultMaxRetries = 3
 )
 
@@ -52,7 +54,7 @@ const (
 func New(options ...Option) (*TTS, error) {
 	// Build the config, apply the defaults
 	tts := &TTS{
-		model:      TTSModelXTTSv2,
+		model:      model.TTSModelXTTSv2,
 		outputDir:  defaultOutputDir,
 		device:     defaultDevice,
 		maxRetries: defaultMaxRetries,
@@ -78,7 +80,7 @@ func New(options ...Option) (*TTS, error) {
 // NewWithModelXttsV2 creates a new TTS instance configured for the XTTS v2 model.
 func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(TTSModelXTTSv2),
+		WithModelId(model.TTSModelXTTSv2),
 	}, options...)
 	return New(opts...)
 }
@@ -86,7 +88,7 @@ func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 // NewWithModelXttsV1 creates a new TTS instance configured for the XTTS v1.1 model.
 func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(TTSModelXTTSv1),
+		WithModelId(model.TTSModelXTTSv1),
 	}, options...)
 	return New(opts...)
 }
@@ -94,7 +96,7 @@ func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 // NewWithModelYourTTS creates a new TTS instance configured for the YourTTS model.
 func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(TTSModelYourTTS),
+		WithModelId(model.TTSModelYourTTS),
 	}, options...)
 	return New(opts...)
 }
@@ -102,7 +104,7 @@ func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
 func NewWithModelBark(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(TTSModelBark),
+		WithModelId(model.TTSModelBark),
 	}, options...)
 	return New(opts...)
 }
@@ -224,17 +226,17 @@ func (t TTS) VocoderName() string {
 }
 
 // CurrentModel returns the Model being used for synthesis.
-func (t TTS) CurrentModel() Model {
+func (t TTS) CurrentModel() model.Model {
 	return t.model
 }
 
 // CurrentVocoder returns the VocoderModel being used for synthesis.
-func (t TTS) CurrentVocoder() Vocoder {
+func (t TTS) CurrentVocoder() model.Vocoder {
 	return t.vocoder
 }
 
-// CurrentModelLanguage returns the Language being used for synthesis.
-func (t TTS) CurrentModelLanguage() Language {
+// CurrentModelLanguage returns the model.Language being used for synthesis.
+func (t TTS) CurrentModelLanguage() model.Language {
 	return t.model.currentLanguage
 }
 
@@ -254,7 +256,7 @@ func (t TTS) CurrentOutputDir() string {
 }
 
 // CurrentDevice returns the compute device used for synthesis.
-func (t TTS) CurrentDevice() Device {
+func (t TTS) CurrentDevice() model.Device {
 	return t.device
 }
 
@@ -264,7 +266,7 @@ func (t TTS) CurrentMaxRetries() int {
 }
 
 // SetCurrentModel sets the TTS model to use for synthesis.
-func (t *TTS) SetCurrentModelIdentifier(m ModelIdentifier) error {
+func (t *TTS) SetCurrentModelIdentifier(m model.ModelIdentifier) error {
 	if err := m.Validate(); err != nil {
 		return fmt.Errorf("invalid TTS model specified: %s", err)
 	}
@@ -291,7 +293,7 @@ func (t *TTS) SetCurrentModelPath(p string) error {
 }
 
 // SetCurrentVocoder sets the vocoder model to use for audio synthesis.
-func (t *TTS) SetCurrentVocoder(v Vocoder) error {
+func (t *TTS) SetCurrentVocoder(v model.Vocoder) error {
 	if err := v.Validate(); err != nil {
 		return fmt.Errorf("invalid Vocoder specified: %s", err)
 	}
@@ -300,7 +302,7 @@ func (t *TTS) SetCurrentVocoder(v Vocoder) error {
 }
 
 // SetCurrentModelLanguage sets the target language for synthesis.
-func (t *TTS) SetCurrentModelLanguage(l Language) error {
+func (t *TTS) SetCurrentModelLanguage(l model.Language) error {
 	if !l.IsSupported() {
 		return fmt.Errorf("invalid language specified: %s", l.String())
 	}
@@ -312,7 +314,7 @@ func (t *TTS) SetCurrentModelLanguage(l Language) error {
 }
 
 // SetCurrentVocoderLanguage sets the target language for synthesis.
-func (t *TTS) SetCurrentVocoderLanguage(l Language) error {
+func (t *TTS) SetCurrentVocoderLanguage(l model.Language) error {
 	if !l.IsSupported() {
 		return fmt.Errorf("invalid language specified: %s", l.String())
 	}
@@ -368,7 +370,7 @@ func (t *TTS) SetCurrentOutputDir(dir string) error {
 }
 
 // SetCurrentDevice sets the compute device for synthesis.
-func (t *TTS) SetCurrentDevice(device Device) error {
+func (t *TTS) SetCurrentDevice(device model.Device) error {
 	if !device.IsValid() {
 		return fmt.Errorf("invalid device specified: %s", device.String())
 	}

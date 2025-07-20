@@ -4,17 +4,18 @@ import (
 	"os"
 	"testing"
 
+	"github.com/pixellini/go-coqui/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-var MockModelId = ModelIdentifier{
-	category:             modelTypeTTS,
-	dataset:              DatasetLibriTTS,
-	model:                BaseModelXTTSv2,
-	defaultLanguage:      English,
-	currentLanguage:      English,
-	supportedLanguages:   []Language{English, German, French},
+var MockModelId = model.ModelIdentifier{
+	category:             model.modelTypeTTS,
+	dataset:              model.DatasetLibriTTS,
+	model:                model.BaseModelXTTSv2,
+	defaultLanguage:      model.English,
+	currentLanguage:      model.English,
+	supportedLanguages:   []model.Language{model.English, model.German, model.French},
 	supportsVoiceCloning: true,
 }
 
@@ -45,12 +46,12 @@ func TestOptions(t *testing.T) {
 		},
 		{
 			name:   "WithModelLanguage",
-			option: WithModelLanguage(English),
+			option: WithModelLanguage(model.English),
 			pre: func(tts *TTS) {
 				tts.model = MockModelId
 			},
 			check: func(t *testing.T, tts *TTS) {
-				assert.Equal(t, English, tts.model.currentLanguage, "WithModelLanguage should set the model's currentLanguage field")
+				assert.Equal(t, model.English, tts.model.currentLanguage, "WithModelLanguage should set the model's currentLanguage field")
 			},
 		},
 		{
@@ -62,12 +63,12 @@ func TestOptions(t *testing.T) {
 		},
 		{
 			name:   "WithVocoderLanguage",
-			option: WithVocoderLanguage(English),
+			option: WithVocoderLanguage(model.English),
 			pre: func(tts *TTS) {
 				tts.vocoder = MockModelId
 			},
 			check: func(t *testing.T, tts *TTS) {
-				assert.Equal(t, English, tts.vocoder.currentLanguage, "WithVocoderLanguage should set the vocoder's currentLanguage field")
+				assert.Equal(t, model.English, tts.vocoder.currentLanguage, "WithVocoderLanguage should set the vocoder's currentLanguage field")
 			},
 		},
 		{
@@ -100,9 +101,9 @@ func TestOptions(t *testing.T) {
 		},
 		{
 			name:   "WithDevice",
-			option: WithDevice(DeviceCPU),
+			option: WithDevice(model.DeviceCPU),
 			check: func(t *testing.T, tts *TTS) {
-				assert.Equal(t, DeviceCPU, tts.device, "WithDevice should set the device field")
+				assert.Equal(t, model.DeviceCPU, tts.device, "WithDevice should set the device field")
 			},
 		},
 		{
