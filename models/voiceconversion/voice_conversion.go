@@ -6,39 +6,72 @@ import (
 	"github.com/pixellini/go-coqui/model"
 )
 
-type VoiceConversion = model.Identifier
+type Model = model.Identifier
 
 const (
 	// Voice conversion architectures.
-	BaseVoiceConversionFreevc24 model.BaseModel = "freevc24"
+	Freevc24    model.BaseModel = "freevc24"
+	Knnvc       model.BaseModel = "knnvc"
+	OpenvoiceV1 model.BaseModel = "openvoice_v1"
+	OpenvoiceV2 model.BaseModel = "openvoice_v2"
 )
 
 // Voice Conversion Models for converting one voice to another.
 var (
-	// Multilingual voice conversion.
-	VoiceConversionVCTKFreeVC24 = VoiceConversion{
+	// voice_conversion_models/multilingual/vctk/freevc24
+	PresetVCTKFreeVC24 = Model{
 		Category:           model.TypeVoiceConversion,
 		Dataset:            model.DatasetVCTK,
-		Model:              BaseVoiceConversionFreevc24,
+		Model:              Freevc24,
+		DefaultLanguage:    model.English,
+		CurrentLanguage:    model.English,
+		SupportedLanguages: model.GetSupportedLanguages(),
+	}
+
+	// voice_conversion_models/multilingual/multi-dataset/knnvc
+	PresetMultidataKnnvc = Model{
+		Category:           model.TypeVoiceConversion,
+		Dataset:            model.DatasetVCTK,
+		Model:              Knnvc,
+		DefaultLanguage:    model.English,
+		CurrentLanguage:    model.English,
+		SupportedLanguages: model.GetSupportedLanguages(),
+	}
+
+	// voice_conversion_models/multilingual/multi-dataset/openvoice_v1
+	PresetMultidataOpenVoiceV1 = Model{
+		Category:           model.TypeVoiceConversion,
+		Dataset:            model.DatasetVCTK,
+		Model:              OpenvoiceV1,
+		DefaultLanguage:    model.English,
+		CurrentLanguage:    model.English,
+		SupportedLanguages: model.GetSupportedLanguages(),
+	}
+
+	// voice_conversion_models/multilingual/multi-dataset/openvoice_v2
+	PresetMultidataOpenVoiceV2 = Model{
+		Category:           model.TypeVoiceConversion,
+		Dataset:            model.DatasetVCTK,
+		Model:              OpenvoiceV2,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: model.GetSupportedLanguages(),
 	}
 )
 
-// VoiceConversions contains all predefined voice conversion model identifiers.
-var VoiceConversions = model.ModelList[VoiceConversion]{
-	Models: []VoiceConversion{
-		VoiceConversionVCTKFreeVC24,
+// presets contains all predefined voice conversion model identifiers.
+var presets = model.ModelList[Model]{
+	Models: []Model{
+		PresetVCTKFreeVC24,
 	},
 }
 
-// NewVoiceConversion creates a new VoiceConversion model with the specified parameters.
-func NewVoiceConversion(base model.BaseModel, dataset model.Dataset, language model.Language) (VoiceConversion, error) {
+// New creates a new VoiceConversion model with the specified parameters.
+func New(base model.BaseModel, dataset model.Dataset, language model.Language) (Model, error) {
 	return model.NewModel(model.TypeVoiceConversion, base, dataset, language)
 }
 
-// GetVoiceConversionModels returns a list of all predefined voice conversion models.
-func GetVoiceConversionModels() []VoiceConversion {
-	return slices.Clone(VoiceConversions.Models)
+// GetPresets returns a list of all predefined voice conversion models.
+func GetPresets() []Model {
+	return slices.Clone(presets.Models)
 }

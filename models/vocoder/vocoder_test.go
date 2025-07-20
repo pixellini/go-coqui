@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewVocoder(t *testing.T) {
-	v, err := NewVocoder(BaseVocoderHifigan, model.DatasetVCTK, model.English)
-	require.NoError(t, err, "NewVocoder should not return an error for valid input")
-	assert.Equal(t, model.TypeVocoder, v.Category, "NewVocoder should set category to modelTypeVocoder")
+func TestNew(t *testing.T) {
+	v, err := New(Hifigan, model.DatasetVCTK, model.English)
+	require.NoError(t, err, "New should not return an error for valid input")
+	assert.Equal(t, model.TypeVocoder, v.Category, "New should set category to modelTypeVocoder")
 }
 
-func TestGetVocoders(t *testing.T) {
-	models := GetVocoders()
-	require.NotEmpty(t, models, "GetVocoders should not return an empty slice")
-	assert.Equal(t, Vocoders.Models, models, "GetVocoders should return the predefined Vocoders slice")
+func TestGetPresets(t *testing.T) {
+	models := GetPresets()
+	require.NotEmpty(t, models, "GetPresets should not return an empty slice")
+	assert.Equal(t, presets.Models, models, "GetPresets should return the predefined presets slice")
 }

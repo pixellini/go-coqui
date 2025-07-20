@@ -20,14 +20,14 @@ import (
 type TTS struct {
 	// model specifies the TTS model to use for synthesis.
 	// This can be a specific model like ModelXTTSv2 or a custom Model.
-	model tts.TTSModel
+	model tts.Model
 	// modelPath is the path to a custom TTS model.
 	// If set, this overrides the default model and uses the specified path.
 	modelPath string
 	// vocoder specifies the vocoder model to use for audio synthesis.
 	// If not set, the default vocoder for the model will be used.
 	// This is useful for advanced configurations where a specific vocoder is desired.
-	vocoder vocoder.Vocoder
+	vocoder vocoder.Model
 	// speakerSample is the path to the speaker sample file (XTTS only).
 	// Should be a clear audio sample of the desired voice (1-3 minutes recommended).
 	speakerSample string
@@ -56,7 +56,7 @@ const (
 func New(options ...Option) (*TTS, error) {
 	// Build the config, apply the defaults
 	tts := &TTS{
-		model:      tts.TTSModelXTTSv2,
+		model:      tts.PresetXTTSv2,
 		outputDir:  defaultOutputDir,
 		device:     defaultDevice,
 		maxRetries: defaultMaxRetries,
@@ -82,7 +82,7 @@ func New(options ...Option) (*TTS, error) {
 // NewWithModelXttsV2 creates a new TTS instance configured for the XTTS v2 model.
 func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(tts.TTSModelXTTSv2),
+		WithModelId(tts.PresetXTTSv2),
 	}, options...)
 	return New(opts...)
 }
@@ -90,7 +90,7 @@ func NewWithModelXttsV2(options ...Option) (*TTS, error) {
 // NewWithModelXttsV1 creates a new TTS instance configured for the XTTS v1.1 model.
 func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(tts.TTSModelXTTSv1),
+		WithModelId(tts.PresetXTTSv1),
 	}, options...)
 	return New(opts...)
 }
@@ -98,7 +98,7 @@ func NewWithModelXttsV1(options ...Option) (*TTS, error) {
 // NewWithModelYourTTS creates a new TTS instance configured for the YourTTS model.
 func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(tts.TTSModelYourTTS),
+		WithModelId(tts.PresetYourTTS),
 	}, options...)
 	return New(opts...)
 }
@@ -106,7 +106,7 @@ func NewWithModelYourTTS(options ...Option) (*TTS, error) {
 // NewWithModelBark creates a new TTS instance configured for the Bark model.
 func NewWithModelBark(options ...Option) (*TTS, error) {
 	opts := append([]Option{
-		WithModelId(tts.TTSModelBark),
+		WithModelId(tts.PresetBark),
 	}, options...)
 	return New(opts...)
 }
@@ -233,7 +233,7 @@ func (t TTS) CurrentModel() model.Model {
 }
 
 // CurrentVocoder returns the VocoderModel being used for synthesis.
-func (t TTS) CurrentVocoder() vocoder.Vocoder {
+func (t TTS) CurrentVocoder() vocoder.Model {
 	return t.vocoder
 }
 
@@ -295,7 +295,7 @@ func (t *TTS) SetCurrentModelPath(p string) error {
 }
 
 // SetCurrentVocoder sets the vocoder model to use for audio synthesis.
-func (t *TTS) SetCurrentVocoder(v vocoder.Vocoder) error {
+func (t *TTS) SetCurrentVocoder(v vocoder.Model) error {
 	if err := v.Validate(); err != nil {
 		return fmt.Errorf("invalid Vocoder specified: %s", err)
 	}

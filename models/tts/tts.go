@@ -1,81 +1,83 @@
 package tts
 
 import (
+	"slices"
+
 	"github.com/pixellini/go-coqui/model"
 )
 
-type TTSModel = model.Identifier
+type Model = model.Identifier
 
 const (
 	// Multilingual architectures.
-	BaseModelXTTSv2  model.BaseModel = "xtts_v2"
-	BaseModelXTTSv1  model.BaseModel = "xtts_v1.1"
-	BaseModelYourTTS model.BaseModel = "your_tts"
-	BaseModelBark    model.BaseModel = "bark"
+	XTTSv2  model.BaseModel = "xtts_v2"
+	XTTSv1  model.BaseModel = "xtts_v1.1"
+	YourTTS model.BaseModel = "your_tts"
+	Bark    model.BaseModel = "bark"
 
 	// Single language architectures.
-	BaseModelVITS         model.BaseModel = "vits"
-	BaseModelVITSNeon     model.BaseModel = "vits--neon"
-	BaseModelVITSNeonDash model.BaseModel = "vits-neon"
-	BaseModelVITSMale     model.BaseModel = "vits-male"
-	BaseModelVITSFemale   model.BaseModel = "vits-female"
+	VITS         model.BaseModel = "vits"
+	VITSNeon     model.BaseModel = "vits--neon"
+	VITSNeonDash model.BaseModel = "vits-neon"
+	VITSMale     model.BaseModel = "vits-male"
+	VITSFemale   model.BaseModel = "vits-female"
 
 	// Tacotron variants.
-	BaseModelTacotron2       model.BaseModel = "tacotron2"
-	BaseModelTacotron2DDC    model.BaseModel = "tacotron2-DDC"
-	BaseModelTacotron2DDCPh  model.BaseModel = "tacotron2-DDC_ph"
-	BaseModelTacotron2DCA    model.BaseModel = "tacotron2-DCA"
-	BaseModelTacotron2DDCGST model.BaseModel = "tacotron2-DDC-GST"
+	Tacotron2       model.BaseModel = "tacotron2"
+	Tacotron2DDC    model.BaseModel = "tacotron2-DDC"
+	Tacotron2DDCPh  model.BaseModel = "tacotron2-DDC_ph"
+	Tacotron2DCA    model.BaseModel = "tacotron2-DCA"
+	Tacotron2DDCGST model.BaseModel = "tacotron2-DDC-GST"
 
 	// Other architectures.
-	BaseModelGlowTTS            model.BaseModel = "glow-tts"
-	BaseModelFastPitch          model.BaseModel = "fast_pitch"
-	BaseModelSpeedySpeech       model.BaseModel = "speedy-speech"
-	BaseModelOverflow           model.BaseModel = "overflow"
-	BaseModelNeuralHMM          model.BaseModel = "neural_hmm"
-	BaseModelTortoise           model.BaseModel = "tortoise-v2"
-	BaseModelCapacitronT2C50    model.BaseModel = "capacitron-t2-c50"
-	BaseModelCapacitronT2C150v2 model.BaseModel = "capacitron-t2-c150_v2"
-	BaseModelJenny              model.BaseModel = "jenny"
+	GlowTTS            model.BaseModel = "glow-tts"
+	FastPitch          model.BaseModel = "fast_pitch"
+	SpeedySpeech       model.BaseModel = "speedy-speech"
+	Overflow           model.BaseModel = "overflow"
+	NeuralHMM          model.BaseModel = "neural_hmm"
+	Tortoise           model.BaseModel = "tortoise-v2"
+	CapacitronT2C50    model.BaseModel = "capacitron-t2-c50"
+	CapacitronT2C150v2 model.BaseModel = "capacitron-t2-c150_v2"
+	Jenny              model.BaseModel = "jenny"
 )
 
 // Presets of predefined TTS models for easy access that is currently available in the Coqui TTS library.
 var (
 	// Multilingual models (support all languages)
-	TTSModelXTTSv2 = TTSModel{
+	PresetXTTSv2 = Model{
 		Category:             model.TypeTTS,
 		Dataset:              model.DatasetMultiDataset,
-		Model:                BaseModelXTTSv2,
+		Model:                XTTSv2,
 		DefaultLanguage:      model.English,
 		CurrentLanguage:      model.English,
 		SupportedLanguages:   model.GetSupportedLanguages(),
 		SupportsVoiceCloning: true,
 	}
 
-	TTSModelXTTSv1 = TTSModel{
+	PresetXTTSv1 = Model{
 		Category:             model.TypeTTS,
 		Dataset:              model.DatasetMultiDataset,
-		Model:                BaseModelXTTSv1,
+		Model:                XTTSv1,
 		DefaultLanguage:      model.English,
 		CurrentLanguage:      model.English,
 		SupportedLanguages:   model.GetSupportedLanguages(),
 		SupportsVoiceCloning: true,
 	}
 
-	TTSModelYourTTS = TTSModel{
+	PresetYourTTS = Model{
 		Category:             model.TypeTTS,
 		Dataset:              model.DatasetMultiDataset,
-		Model:                BaseModelYourTTS,
+		Model:                YourTTS,
 		DefaultLanguage:      model.English,
 		CurrentLanguage:      model.English,
 		SupportedLanguages:   model.GetSupportedLanguages(),
 		SupportsVoiceCloning: true,
 	}
 
-	TTSModelBark = TTSModel{
+	PresetBark = Model{
 		Category:             model.TypeTTS,
 		Dataset:              model.DatasetMultiDataset,
-		Model:                BaseModelBark,
+		Model:                Bark,
 		DefaultLanguage:      model.English,
 		CurrentLanguage:      model.English,
 		SupportedLanguages:   model.GetSupportedLanguages(),
@@ -83,442 +85,441 @@ var (
 	}
 
 	// Common Voice (CV) dataset models
-	TTSModelVITSCV = TTSModel{
+	PresetVITSCV = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCV,
-		Model:              BaseModelVITS,
-		DefaultLanguage:    model.English, // Fallback to model.English if available
-		CurrentLanguage:    model.English, // Fallback to model.English if available
+		Model:              VITS,
+		DefaultLanguage:    model.English,
+		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.Bulgarian, model.Czech, model.Danish, model.Estonian, model.Irish, model.Greek, model.Croatian, model.Lithuanian, model.Latvian, model.Maltese, model.Portuguese, model.Romanian, model.Slovak, model.Slovenian, model.Swedish},
 	}
 
 	// model.English dataset models
-	TTSModelTacotron2EK1 = TTSModel{
+	PresetTacotron2EK1 = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetEK1,
-		Model:              BaseModelTacotron2,
+		Model:              Tacotron2,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// LJSpeech dataset models
-	TTSModelTacotron2DDCLJSpeech = TTSModel{
+	PresetTacotron2DDCLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelTacotron2DDC,
+		Model:              Tacotron2DDC,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelTacotron2DDCPhLJSpeech = TTSModel{
+	PresetTacotron2DDCPhLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelTacotron2DDCPh,
+		Model:              Tacotron2DDCPh,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelGlowTTSLJSpeech = TTSModel{
+	PresetGlowTTSLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelGlowTTS,
+		Model:              GlowTTS,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelSpeedySpeechLJSpeech = TTSModel{
+	PresetSpeedySpeechLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelSpeedySpeech,
+		Model:              SpeedySpeech,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelTacotron2DCALJSpeech = TTSModel{
+	PresetTacotron2DCALJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelTacotron2DCA,
+		Model:              Tacotron2DCA,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelVITSLJSpeech = TTSModel{
+	PresetVITSLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelVITSNeonLJSpeech = TTSModel{
+	PresetVITSNeonLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelVITSNeon,
+		Model:              VITSNeon,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelFastPitchLJSpeech = TTSModel{
+	PresetFastPitchLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelFastPitch,
+		Model:              FastPitch,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelOverflowLJSpeech = TTSModel{
+	PresetOverflowLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelOverflow,
+		Model:              Overflow,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelNeuralHMMLJSpeech = TTSModel{
+	PresetNeuralHMMLJSpeech = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetLJSpeech,
-		Model:              BaseModelNeuralHMM,
+		Model:              NeuralHMM,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// VCTK dataset models
-	TTSModelVITSVCTK = TTSModel{
+	PresetVITSVCTK = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetVCTK,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelFastPitchVCTK = TTSModel{
+	PresetFastPitchVCTK = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetVCTK,
-		Model:              BaseModelFastPitch,
+		Model:              FastPitch,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// Sam dataset models
-	TTSModelTacotron2DDCSam = TTSModel{
+	PresetTacotron2DDCSam = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetSam,
-		Model:              BaseModelTacotron2DDC,
+		Model:              Tacotron2DDC,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// Blizzard2013 dataset models
-	TTSModelCapacitronT2C50Blizzard = TTSModel{
+	PresetCapacitronT2C50Blizzard = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetBlizzard2013,
-		Model:              BaseModelCapacitronT2C50,
+		Model:              CapacitronT2C50,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
-	TTSModelCapacitronT2C150v2Blizzard = TTSModel{
+	PresetCapacitronT2C150v2Blizzard = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetBlizzard2013,
-		Model:              BaseModelCapacitronT2C150v2,
+		Model:              CapacitronT2C150v2,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// Multi-dataset model.English models
-	TTSModelTortoiseV2 = TTSModel{
+	PresetTortoiseV2 = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMultiDataset,
-		Model:              BaseModelTortoise,
+		Model:              Tortoise,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// Jenny dataset models
-	TTSModelJenny = TTSModel{
+	PresetJenny = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetJenny,
-		Model:              BaseModelJenny,
+		Model:              Jenny,
 		DefaultLanguage:    model.English,
 		CurrentLanguage:    model.English,
 		SupportedLanguages: []model.Language{model.English},
 	}
 
 	// Mai dataset models (multiple languages)
-	TTSModelTacotron2DDCMai = TTSModel{
+	PresetTacotron2DDCMai = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMai,
-		Model:              BaseModelTacotron2DDC,
+		Model:              Tacotron2DDC,
 		DefaultLanguage:    model.Spanish,
 		CurrentLanguage:    model.Spanish,
 		SupportedLanguages: []model.Language{model.Spanish, model.French, model.Dutch},
 	}
 
-	TTSModelGlowTTSMai = TTSModel{
+	PresetGlowTTSMai = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMai,
-		Model:              BaseModelGlowTTS,
+		Model:              GlowTTS,
 		DefaultLanguage:    model.Ukrainian,
 		CurrentLanguage:    model.Ukrainian,
 		SupportedLanguages: []model.Language{model.Ukrainian},
 	}
 
-	TTSModelVITSMai = TTSModel{
+	PresetVITSMai = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMai,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.Ukrainian,
 		CurrentLanguage:    model.Ukrainian,
 		SupportedLanguages: []model.Language{model.Ukrainian},
 	}
 
 	// CSS10 dataset models (multiple languages)
-	TTSModelVITSCSS10 = TTSModel{
+	PresetVITSCSS10 = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCSS10,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.Spanish,
 		CurrentLanguage:    model.Spanish,
 		SupportedLanguages: []model.Language{model.Spanish, model.French, model.German, model.Dutch, model.Hungarian, model.Finnish},
 	}
 
-	TTSModelVITSNeonCSS10 = TTSModel{
+	PresetVITSNeonCSS10 = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCSS10,
-		Model:              BaseModelVITSNeon,
+		Model:              VITSNeon,
 		DefaultLanguage:    model.German,
 		CurrentLanguage:    model.German,
 		SupportedLanguages: []model.Language{model.German},
 	}
 
 	// Baker dataset models (Chinese)
-	TTSModelTacotron2DDCGSTBaker = TTSModel{
+	PresetTacotron2DDCGSTBaker = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetBaker,
-		Model:              BaseModelTacotron2DDCGST,
+		Model:              Tacotron2DDCGST,
 		DefaultLanguage:    model.Chinese,
 		CurrentLanguage:    model.Chinese,
 		SupportedLanguages: []model.Language{model.Chinese},
 	}
 
 	// Thorsten dataset models (German)
-	TTSModelTacotron2DCAThorsten = TTSModel{
+	PresetTacotron2DCAThorsten = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetThorsten,
-		Model:              BaseModelTacotron2DCA,
+		Model:              Tacotron2DCA,
 		DefaultLanguage:    model.German,
 		CurrentLanguage:    model.German,
 		SupportedLanguages: []model.Language{model.German},
 	}
 
-	TTSModelVITSThorsten = TTSModel{
+	PresetVITSThorsten = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetThorsten,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.German,
 		CurrentLanguage:    model.German,
 		SupportedLanguages: []model.Language{model.German},
 	}
 
-	TTSModelTacotron2DDCThorsten = TTSModel{
+	PresetTacotron2DDCThorsten = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetThorsten,
-		Model:              BaseModelTacotron2DDC,
+		Model:              Tacotron2DDC,
 		DefaultLanguage:    model.German,
 		CurrentLanguage:    model.German,
 		SupportedLanguages: []model.Language{model.German},
 	}
 
 	// Kokoro dataset models (Japanese)
-	TTSModelTacotron2DDCKokoro = TTSModel{
+	PresetTacotron2DDCKokoro = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetKokoro,
-		Model:              BaseModelTacotron2DDC,
+		Model:              Tacotron2DDC,
 		DefaultLanguage:    model.Japanese,
 		CurrentLanguage:    model.Japanese,
 		SupportedLanguages: []model.Language{model.Japanese},
 	}
 
 	// Common Voice dataset models
-	TTSModelGlowTTSCommonVoice = TTSModel{
+	PresetGlowTTSCommonVoice = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCommonVoice,
-		Model:              BaseModelGlowTTS,
+		Model:              GlowTTS,
 		DefaultLanguage:    model.Turkish,
 		CurrentLanguage:    model.Turkish,
 		SupportedLanguages: []model.Language{model.Turkish, model.Belarusian},
 	}
 
 	// Mai Female dataset models (Italian)
-	TTSModelGlowTTSMaiFemale = TTSModel{
+	PresetGlowTTSMaiFemale = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMaiFemale,
-		Model:              BaseModelGlowTTS,
+		Model:              GlowTTS,
 		DefaultLanguage:    model.Italian,
 		CurrentLanguage:    model.Italian,
 		SupportedLanguages: []model.Language{model.Italian},
 	}
 
-	TTSModelVITSMaiFemale = TTSModel{
+	PresetVITSMaiFemale = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMaiFemale,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.Italian,
 		CurrentLanguage:    model.Italian,
 		SupportedLanguages: []model.Language{model.Italian, model.Polish},
 	}
 
 	// Mai Male dataset models (Italian)
-	TTSModelGlowTTSMaiMale = TTSModel{
+	PresetGlowTTSMaiMale = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMaiMale,
-		Model:              BaseModelGlowTTS,
+		Model:              GlowTTS,
 		DefaultLanguage:    model.Italian,
 		CurrentLanguage:    model.Italian,
 		SupportedLanguages: []model.Language{model.Italian},
 	}
 
-	TTSModelVITSMaiMale = TTSModel{
+	PresetVITSMaiMale = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetMaiMale,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.Italian,
 		CurrentLanguage:    model.Italian,
 		SupportedLanguages: []model.Language{model.Italian},
 	}
 
 	// OpenBible dataset models (African languages)
-	TTSModelVITSOpenBible = TTSModel{
+	PresetVITSOpenBible = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetOpenBible,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.Hausa,
 		CurrentLanguage:    model.Hausa,
 		SupportedLanguages: []model.Language{model.Ewe, model.Hausa, model.Lin, model.TwiAkuapem, model.TwiAsante, model.Yoruba},
 	}
 
 	// Custom dataset models
-	TTSModelVITSCustom = TTSModel{
+	PresetVITSCustom = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCustom,
-		Model:              BaseModelVITS,
+		Model:              VITS,
 		DefaultLanguage:    model.Catalan,
 		CurrentLanguage:    model.Catalan,
 		SupportedLanguages: []model.Language{model.Catalan, model.Bengali},
 	}
 
-	TTSModelGlowTTSCustom = TTSModel{
+	PresetGlowTTSCustom = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCustom,
-		Model:              BaseModelGlowTTS,
+		Model:              GlowTTS,
 		DefaultLanguage:    model.Persian,
 		CurrentLanguage:    model.Persian,
 		SupportedLanguages: []model.Language{model.Persian},
 	}
 
-	TTSModelVITSMaleCustom = TTSModel{
+	PresetVITSMaleCustom = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCustom,
-		Model:              BaseModelVITSMale,
+		Model:              VITSMale,
 		DefaultLanguage:    model.Bengali,
 		CurrentLanguage:    model.Bengali,
 		SupportedLanguages: []model.Language{model.Bengali},
 	}
 
-	TTSModelVITSFemaleCustom = TTSModel{
+	PresetVITSFemaleCustom = Model{
 		Category:           model.TypeTTS,
 		Dataset:            model.DatasetCustom,
-		Model:              BaseModelVITSFemale,
+		Model:              VITSFemale,
 		DefaultLanguage:    model.Bengali,
 		CurrentLanguage:    model.Bengali,
 		SupportedLanguages: []model.Language{model.Bengali},
 	}
 )
 
-// ttsModels contains a list of all predefined TTS models.
-var TTSModels = model.ModelList[TTSModel]{
-	Models: []TTSModel{
+// presets contains a list of all predefined TTS models.
+var presets = model.ModelList[Model]{
+	Models: []Model{
 		// Multilingual models
-		TTSModelXTTSv2,
-		TTSModelXTTSv1,
-		TTSModelYourTTS,
-		TTSModelBark,
+		PresetXTTSv2,
+		PresetXTTSv1,
+		PresetYourTTS,
+		PresetBark,
 
 		// Common Voice models
-		TTSModelVITSCV,
+		PresetVITSCV,
 
 		// model.English models
-		TTSModelTacotron2EK1,
-		TTSModelTacotron2DDCLJSpeech,
-		TTSModelTacotron2DDCPhLJSpeech,
-		TTSModelGlowTTSLJSpeech,
-		TTSModelSpeedySpeechLJSpeech,
-		TTSModelTacotron2DCALJSpeech,
-		TTSModelVITSLJSpeech,
-		TTSModelVITSNeonLJSpeech,
-		TTSModelFastPitchLJSpeech,
-		TTSModelOverflowLJSpeech,
-		TTSModelNeuralHMMLJSpeech,
-		TTSModelVITSVCTK,
-		TTSModelFastPitchVCTK,
-		TTSModelTacotron2DDCSam,
-		TTSModelCapacitronT2C50Blizzard,
-		TTSModelCapacitronT2C150v2Blizzard,
-		TTSModelTortoiseV2,
-		TTSModelJenny,
+		PresetTacotron2EK1,
+		PresetTacotron2DDCLJSpeech,
+		PresetTacotron2DDCPhLJSpeech,
+		PresetGlowTTSLJSpeech,
+		PresetSpeedySpeechLJSpeech,
+		PresetTacotron2DCALJSpeech,
+		PresetVITSLJSpeech,
+		PresetVITSNeonLJSpeech,
+		PresetFastPitchLJSpeech,
+		PresetOverflowLJSpeech,
+		PresetNeuralHMMLJSpeech,
+		PresetVITSVCTK,
+		PresetFastPitchVCTK,
+		PresetTacotron2DDCSam,
+		PresetCapacitronT2C50Blizzard,
+		PresetCapacitronT2C150v2Blizzard,
+		PresetTortoiseV2,
+		PresetJenny,
 
 		// Multi-language models
-		TTSModelTacotron2DDCMai,
-		TTSModelGlowTTSMai,
-		TTSModelVITSMai,
-		TTSModelVITSCSS10,
-		TTSModelVITSNeonCSS10,
+		PresetTacotron2DDCMai,
+		PresetGlowTTSMai,
+		PresetVITSMai,
+		PresetVITSCSS10,
+		PresetVITSNeonCSS10,
 
 		// Language-specific models
-		TTSModelTacotron2DDCGSTBaker,
-		TTSModelTacotron2DCAThorsten,
-		TTSModelVITSThorsten,
-		TTSModelTacotron2DDCThorsten,
-		TTSModelTacotron2DDCKokoro,
-		TTSModelGlowTTSCommonVoice,
-		TTSModelGlowTTSMaiFemale,
-		TTSModelVITSMaiFemale,
-		TTSModelGlowTTSMaiMale,
-		TTSModelVITSMaiMale,
-		TTSModelVITSOpenBible,
-		TTSModelVITSCustom,
-		TTSModelGlowTTSCustom,
-		TTSModelVITSMaleCustom,
-		TTSModelVITSFemaleCustom,
+		PresetTacotron2DDCGSTBaker,
+		PresetTacotron2DCAThorsten,
+		PresetVITSThorsten,
+		PresetTacotron2DDCThorsten,
+		PresetTacotron2DDCKokoro,
+		PresetGlowTTSCommonVoice,
+		PresetGlowTTSMaiFemale,
+		PresetVITSMaiFemale,
+		PresetGlowTTSMaiMale,
+		PresetVITSMaiMale,
+		PresetVITSOpenBible,
+		PresetVITSCustom,
+		PresetGlowTTSCustom,
+		PresetVITSMaleCustom,
+		PresetVITSFemaleCustom,
 	},
 }
 
-// NewTTSModel creates a new custom TTS model identifier.
-func NewTTSModel(base model.BaseModel, dataset model.Dataset, language model.Language) (model.Identifier, error) {
+// New creates a new custom TTS model identifier.
+func New(base model.BaseModel, dataset model.Dataset, language model.Language) (model.Identifier, error) {
 	// TODO: Need a method to point to a custom model via a path.
 	// IDEA: It would be cool to add a method that splits the Model Name from a string like "tts_models/en/ek1/tacotron2" into its components.
 	return model.NewModel(model.TypeTTS, base, dataset, language)
 }
 
-// GetTTSModels returns a list of all predefined TTS models.
-func GetTTSModels() []TTSModel {
-	// return slices.Clone(TTSModels.Models)
-	return []TTSModel{}
+// GetPresets returns a list of all predefined TTS models.
+func GetPresets() []Model {
+	return slices.Clone(presets.Models)
 }

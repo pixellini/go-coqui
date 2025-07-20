@@ -45,7 +45,7 @@ func WithModelLanguage(language model.Language) Option {
 }
 
 // WithVocoder sets a vocoder model to use alongside the TTS model.
-func WithVocoder(v vocoder.Vocoder) Option {
+func WithVocoder(v vocoder.Model) Option {
 	return optionFunc(func(t *TTS) error {
 		return t.SetCurrentVocoder(v)
 	})
@@ -61,7 +61,7 @@ func WithVocoderLanguage(language model.Language) Option {
 
 // WithVoiceConversion sets a voice conversion model to use alongside the TTS model.
 // TODO: Implement proper handling for voice conversion models.
-func WithVoiceConversion(vcModel voiceconversion.VoiceConversion) Option {
+func WithVoiceConversion(vcModel voiceconversion.Model) Option {
 	return nil
 }
 

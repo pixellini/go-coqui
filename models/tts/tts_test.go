@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewTTSModel(t *testing.T) {
-	ttsModel, err := NewTTSModel(BaseModelBark, model.DatasetVCTK, model.English)
+func TestNew(t *testing.T) {
+	ttsModel, err := New(Bark, model.DatasetVCTK, model.English)
 	require.NoError(t, err, "NewTTSModel should not return an error for valid input")
 	assert.Equal(t, model.TypeTTS, ttsModel.Category, "NewTTSModel should set category to modelTypeTTS")
 }
 
-func TestGetTTSModels(t *testing.T) {
-	models := GetTTSModels()
-	require.NotEmpty(t, models, "GetTTSModels should not return an empty slice")
-	assert.Equal(t, TTSModels.Models, models, "GetTTSModels should return the predefined TTSModels slice")
+func TestGetPresets(t *testing.T) {
+	models := GetPresets()
+	require.NotEmpty(t, models, "GetPresets should not return an empty slice")
+	assert.Equal(t, presets.Models, models, "GetPresets should return the predefined TTSModels slice")
 }

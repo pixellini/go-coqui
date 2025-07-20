@@ -13,8 +13,8 @@ func TestNew_Default(t *testing.T) {
 	coqui, err := New()
 	assert.NoError(t, err, "New should not return an error for valid input")
 
-	assert.Equal(t, tts.TTSModelXTTSv2, coqui.CurrentModel(), "CurrentModel should return the default model")
-	assert.Equal(t, vocoder.Vocoder{}, coqui.CurrentVocoder(), "CurrentVocoder should return the default vocoder")
+	assert.Equal(t, tts.PresetXTTSv2, coqui.CurrentModel(), "CurrentModel should return the default model")
+	assert.Equal(t, vocoder.Model{}, coqui.CurrentVocoder(), "CurrentVocoder should return the default vocoder")
 	assert.Equal(t, defaultLanguage, coqui.CurrentModelLanguage(), "CurrentModelLanguage should return the default language")
 	assert.Equal(t, "", coqui.CurrentSpeakerSample(), "CurrentSpeakerSample should return the default speaker sample")
 	assert.Equal(t, "", coqui.CurrentSpeakerIndex(), "CurrentSpeakerIndex should return the default speaker index")
@@ -27,34 +27,34 @@ func TestNewWithModelXttsV2(t *testing.T) {
 	coqui, err := NewWithModelXttsV2()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, coqui, "TTS instance should not be nil")
-	assert.Equal(t, tts.TTSModelXTTSv2, coqui.CurrentModel(), "Current model should be XTTSv2")
+	assert.Equal(t, tts.PresetXTTSv2, coqui.CurrentModel(), "Current model should be XTTSv2")
 }
 
 func TestNewWithModelXttsV1(t *testing.T) {
 	coqui, err := NewWithModelXttsV1()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, coqui, "TTS instance should not be nil")
-	assert.Equal(t, tts.TTSModelXTTSv1, coqui.CurrentModel(), "Current model should be XTTSv1")
+	assert.Equal(t, tts.PresetXTTSv1, coqui.CurrentModel(), "Current model should be XTTSv1")
 }
 
 func TestNewWithModelYourTTS(t *testing.T) {
 	coqui, err := NewWithModelYourTTS()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, coqui, "TTS instance should not be nil")
-	assert.Equal(t, tts.TTSModelYourTTS, coqui.CurrentModel(), "Current model should be YourTTS")
+	assert.Equal(t, tts.PresetYourTTS, coqui.CurrentModel(), "Current model should be YourTTS")
 }
 
 func TestNewWithModelBark(t *testing.T) {
 	coqui, err := NewWithModelBark()
 	assert.NoError(t, err, "NewWithModel should not return an error for valid input")
 	assert.NotNil(t, coqui, "TTS instance should not be nil")
-	assert.Equal(t, tts.TTSModelBark, coqui.CurrentModel(), "Current model should be Bark")
+	assert.Equal(t, tts.PresetBark, coqui.CurrentModel(), "Current model should be Bark")
 }
 
 func TestTTSName(t *testing.T) {
 	coqui := &TTS{
 		// A model that is not multilingual
-		model: tts.TTSModelVITSFemaleCustom,
+		model: tts.PresetVITSFemaleCustom,
 	}
 
 	expectedName := "tts_models/bn/custom/vits-female"
@@ -71,7 +71,7 @@ func TestTTSName_Multilingual(t *testing.T) {
 
 func TestTTSVocoderName(t *testing.T) {
 	coqui := &TTS{
-		vocoder: vocoder.VocoderHifiganV2VCTK,
+		vocoder: vocoder.PresetHifiganV2VCTK,
 	}
 
 	expectedVocoderName := "vocoder_models/en/vctk/hifigan_v2"
@@ -82,13 +82,13 @@ func TestTTSSetters(t *testing.T) {
 	coqui, err := New()
 	assert.NoError(t, err, "New should not return an error for valid input")
 
-	newModel := tts.TTSModelBark
+	newModel := tts.PresetBark
 	newModel.CurrentLanguage = model.English
 
 	coqui.SetCurrentIdentifier(newModel)
 	assert.Equal(t, newModel, coqui.CurrentModel(), "SetCurrentModel should update the current model")
 
-	newVocoder := vocoder.Vocoder{}
+	newVocoder := vocoder.Model{}
 	coqui.SetCurrentVocoder(newVocoder)
 	assert.Equal(t, newVocoder, coqui.CurrentVocoder(), "SetCurrentVocoder should update the current vocoder")
 
